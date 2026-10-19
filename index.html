@@ -30,7 +30,7 @@ html{-webkit-text-size-adjust:100%}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   background:var(--bg); color:var(--text); line-height:1.5;
-  -webkit-font-smoothing:antialiased; padding-bottom:80px;
+  -webkit-font-smoothing:antialiased; padding-bottom:120px;
   font-size:15px;
 }
 input[type=number]::-webkit-inner-spin-button,
@@ -101,10 +101,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .stat-value{margin-top:4px;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat-sub{margin-top:2px;font-size:10px;color:var(--muted)}
 .stat-icon{
-  position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:10px;
+  position:static;margin-bottom:8px;width:28px;height:28px;border-radius:9px;
   display:flex;align-items:center;justify-content:center;
 }
-.stat-icon svg{width:17px;height:17px}
+.stat-icon svg{width:15px;height:15px}
 .stat-bar{position:absolute;bottom:0;left:0;right:0;height:3px}
 .stat-emerald .stat-icon{background:var(--emerald-bg);color:var(--emerald)}
 .stat-emerald .stat-bar{background:linear-gradient(90deg,var(--emerald),#14b8a6)}
@@ -182,13 +182,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .be-sky .be-value{color:#0c4a6e}
 
 /* Action bar */
-.actionbar{
-  position:fixed;bottom:0;left:0;right:0;z-index:20;
-  background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-top:1px solid var(--border);
-  padding:12px 16px calc(12px + var(--safe-bottom));
-}
-.actionbar-inner{max-width:480px;margin:0 auto;display:flex;gap:8px}
+.actionbar-inline{margin-bottom:0}
+.actionbar-inner{display:flex;gap:8px}
 .btn{
   display:flex;align-items:center;justify-content:center;gap:6px;
   border-radius:var(--radius-sm);font-size:14px;font-weight:600;transition:all .12s;
@@ -270,7 +265,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 /* Toast */
 .toast{
-  position:fixed;bottom:88px;left:50%;transform:translateX(-50%);z-index:40;
+  position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:40;
   background:var(--primary);color:#fff;padding:8px 16px;border-radius:999px;
   font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,.2);
   animation:toastIn .25s;
@@ -289,6 +284,49 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 }
 .install-hint svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
 .install-hint strong{font-weight:700}
+/* Bottom dock (3 sections) */
+.tab{display:none}
+.tab.active{display:block}
+.dock{
+  position:fixed;bottom:0;left:0;right:0;z-index:25;display:flex;justify-content:center;
+  padding:0 16px calc(10px + var(--safe-bottom));pointer-events:none;
+}
+.dock-inner{
+  pointer-events:auto;display:flex;gap:6px;width:100%;max-width:360px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--border);border-radius:22px;padding:6px;box-shadow:0 8px 24px rgba(15,23,42,.12);
+}
+.dock-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  padding:8px 4px;border-radius:16px;font-size:11px;font-weight:600;color:var(--soft);
+  transition:background .15s,color .15s;
+}
+.dock-item svg{width:22px;height:22px}
+.dock-item.active{color:var(--text);background:#f1f5f9}
+.dock-item:active{transform:scale(.97)}
+
+/* Delivery: two small tiles side by side */
+.delivery-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.delivery-grid .field{
+  margin:0;background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;
+}
+.delivery-grid .field-label{font-size:12px}
+.delivery-grid .field-input input{padding:10px 40px 10px 12px;font-size:15px}
+.delivery-grid .field-suffix{right:12px}
+
+/* Simple section cards */
+.empty-state{text-align:center;padding:48px 16px;color:var(--soft);font-size:14px}
+.empty-state svg{width:44px;height:44px;margin:0 auto 12px;display:block;color:#cbd5e1}
+.profile-avatar{
+  width:64px;height:64px;border-radius:50%;background:var(--primary);color:#fff;
+  display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+}
+.profile-avatar svg{width:28px;height:28px}
+.profile-input{
+  width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:12px 14px;font-size:16px;outline:none;color:var(--text);margin-top:6px;
+}
+.profile-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(15,23,42,.08)}
 </style>
 </head>
 <body>
@@ -307,7 +345,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
         </div>
         <div>
           <h1 id="h-title">Новый расчёт</h1>
-          <p>Юнит-экономика одежды · сом</p>
+          <p id="h-sub">Юнит-экономика одежды · сом</p>
         </div>
       </div>
       <button class="icon-btn" id="btn-list" aria-label="Сохранённые расчёты">
@@ -316,13 +354,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     </div>
   </header>
 
+  <div class="tab active" id="tab-unit">
   <main class="main">
-    <!-- Install hint -->
-    <div class="install-hint" id="install-hint" style="display:none">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-      <span id="install-text"></span>
-    </div>
-
     <!-- Selling price -->
     <div class="card">
       <div class="card-title">
@@ -351,24 +384,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
       <div id="cost-fields"></div>
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
         <div class="card-title" style="margin-bottom:10px">Доставка</div>
-        <div id="delivery-fields"></div>
+        <div class="delivery-grid" id="delivery-fields"></div>
         <div class="fabric-result" id="delivery-result"></div>
       </div>
     </div>
 
-    <!-- Breakdown -->
-    <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div class="card-title" style="margin:0">Структура затрат</div>
-        <span id="break-total" style="font-size:12px;font-weight:600;color:#334155"></span>
-      </div>
-      <div class="breakdown" id="breakdown"></div>
-      <div id="be-alert" style="margin-top:12px"></div>
-    </div>
-
-  </main>
-
-  <div class="actionbar">
+  <div class="actionbar-inline">
     <div class="actionbar-inner">
       <button class="btn btn-ghost" id="btn-reset">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
@@ -380,7 +401,70 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
       </button>
     </div>
   </div>
+
+    <!-- Breakdown -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="card-title" style="margin:0">Структура затрат</div>
+        <span id="break-total" style="font-size:12px;font-weight:600;color:#334155"></span>
+      </div>
+      <div class="breakdown" id="breakdown"></div>
+      <div id="be-alert" style="margin-top:12px"></div>
+    </div>
+
+    <!-- Install hint -->
+    <div class="install-hint" id="install-hint" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span id="install-text"></span>
+    </div>
+
+  </main>
+
+  </div>
+
+  <!-- Section: Data Base (empty) -->
+  <div class="tab" id="tab-data">
+    <main class="main">
+      <div class="card empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+        <p style="font-weight:600;color:#334155;margin-bottom:4px">База данных пуста</p>
+        <p>Раздел в разработке</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Section: Profile -->
+  <div class="tab" id="tab-profile">
+    <main class="main">
+      <div class="card" style="text-align:center">
+        <div class="profile-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+        <label style="display:block;text-align:left">
+          <span class="field-label">Имя</span>
+          <input type="text" id="profile-name" class="profile-input" placeholder="Как к вам обращаться">
+        </label>
+        <p class="field-hint" style="margin-top:12px">Сохраняется на этом устройстве</p>
+      </div>
+    </main>
+  </div>
 </div>
+
+<!-- Bottom dock -->
+<nav class="dock" aria-label="Разделы">
+  <div class="dock-inner">
+    <button class="dock-item active" data-tab="unit">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
+      Unit
+    </button>
+    <button class="dock-item" data-tab="data">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+      Data Base
+    </button>
+    <button class="dock-item" data-tab="profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      Profile
+    </button>
+  </div>
+</nav>
 
 <script>
 (function(){
@@ -391,10 +475,12 @@ var memoryStore = null;
 function storageOK(){try{localStorage.setItem("__t","1");localStorage.removeItem("__t");return true}catch{return false}}
 function storeGet(){if(storageOK()){try{var r=localStorage.getItem(STORAGE_KEY);return r?JSON.parse(r):[]}catch{return memoryStore||[]}}return memoryStore||[]}
 function storeSet(items){if(storageOK()){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(items))}catch{memoryStore=items}}else{memoryStore=items}}
+// Новый расчёт всегда начинается с пустых полей (null = пусто)
 var DEFAULTS = {
-  fabricPriceUsd: 7.5, exchangeRate: 87.5, lengthPerKg: 2.7, fabricConsumption: 1.7,
-  sewing: 250, furniture: 90, ff: 150, deliveryPerKg: 400, weightKg: 0.3, sellingPrice: 1900
+  fabricPriceUsd: null, exchangeRate: null, lengthPerKg: null, fabricConsumption: null,
+  sewing: null, furniture: null, ff: null, deliveryPerKg: null, weightKg: null, sellingPrice: null
 };
+function isEmptyVal(v){return v===null||v===undefined||(typeof v==="number"&&isNaN(v))}
 
 var ICONS = {
   coins:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
@@ -408,23 +494,28 @@ var ICONS = {
   receipt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/></svg>',
   trending:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
   gauge:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>',
+  box:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
+  button:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1.2"/><circle cx="15" cy="10" r="1.2"/><circle cx="9" cy="14" r="1.2"/><circle cx="15" cy="14" r="1.2"/></svg>',
+  needle:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 15 9"/><circle cx="18" cy="6" r="2.5"/><path d="M18 8.5c0 4-3 6-6 8.5-2 1.6-4 2.5-6 3"/></svg>',
+  ruler:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg>',
+  scales:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>',
   target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'
 };
 
 var FABRIC_FIELDS = [
   {key:"fabricPriceUsd",label:"Цена ткани",hint:"Стоимость за 1 кг в $",icon:"coins",suffix:"$"},
   {key:"exchangeRate",label:"Курс $",hint:"Курс доллара в сомах",icon:"gem",suffix:""},
-  {key:"lengthPerKg",label:"Длина в 1 кг",hint:"Сколько метров в 1 кг ткани",icon:"shirt",suffix:"м"},
+  {key:"lengthPerKg",label:"Длина в 1 кг",hint:"Сколько метров в 1 кг ткани",icon:"ruler",suffix:"м"},
   {key:"fabricConsumption",label:"Расход по лекалу",hint:"Метров ткани на одно изделие",icon:"bag",suffix:"м"}
 ];
 var COST_FIELDS = [
   {key:"sewing",label:"Пошив",hint:"Работа ателье/фабрики",icon:"scissors",suffix:"сом"},
-  {key:"furniture",label:"Фурнитура",hint:"Нитки, молнии, бирки, упаковка",icon:"gem",suffix:"сом"},
-  {key:"ff",label:"Услуга ФФ",hint:"Фулфилмент: работа склада на 1 изделие",icon:"truck",suffix:"сом"}
+  {key:"furniture",label:"Фурнитура",hint:"Нитки, молнии, бирки, упаковка",icon:"button",suffix:"сом"},
+  {key:"ff",label:"Услуга ФФ",hint:"Фулфилмент: работа склада на 1 изделие",icon:"box",suffix:"сом"}
 ];
 var DELIVERY_FIELDS = [
-  {key:"deliveryPerKg",label:"Цена доставки за 1 кг",hint:"Тариф перевозки за килограмм",icon:"truck",suffix:"сом"},
-  {key:"weightKg",label:"Вес изделия",hint:"Вес одной единицы товара с упаковкой",icon:"shirt",suffix:"кг"}
+  {key:"deliveryPerKg",label:"Цена за 1 кг",hint:"Тариф доставки",icon:"truck",suffix:"сом"},
+  {key:"weightKg",label:"Вес изделия",hint:"С упаковкой",icon:"scales",suffix:"кг"}
 ];
 var BAR_COLORS = ["#0ea5e9","#6366f1","#8b5cf6","#ec4899","#f59e0b","#10b981","#ef4444","#f97316"];
 
@@ -479,7 +570,7 @@ function renderFields(containerId, fields, extraHintFn){
     var hint=extraHintFn?extraHintFn(f):f.hint;
     label.innerHTML=
       '<div class="field-head"><span class="field-icon">'+(ICONS[f.icon]||"")+'</span><span class="field-label">'+f.label+'</span></div>'+
-      '<div class="field-input"><input type="number" min="0" step="any" inputmode="decimal" data-key="'+f.key+'" value="'+(isNaN(params[f.key])?"":params[f.key])+'">'+(f.suffix?'<span class="field-suffix">'+f.suffix+'</span>':"")+'</div>'+
+      '<div class="field-input"><input type="number" min="0" step="any" inputmode="decimal" data-key="'+f.key+'" value="'+(isEmptyVal(params[f.key])?"":params[f.key])+'" placeholder="0">'+(f.suffix?'<span class="field-suffix">'+f.suffix+'</span>':"")+'</div>'+
       '<p class="field-hint">'+hint+'</p>';
     var inp=label.querySelector("input");
     inp.addEventListener("input",function(e){
@@ -499,10 +590,10 @@ function renderStats(c){
   ];
   document.getElementById("stats").innerHTML=stats.map(function(s){
     return '<div class="stat stat-'+s.tone+'">'+
+      '<div class="stat-icon">'+s.icon+'</div>'+
       '<div class="stat-label">'+s.label+'</div>'+
       '<div class="stat-value">'+s.value+'</div>'+
       (s.sub?'<div class="stat-sub">'+s.sub+'</div>':"")+
-      '<div class="stat-icon">'+s.icon+'</div>'+
       '<div class="stat-bar"></div></div>';
   }).join("");
 }
@@ -538,8 +629,15 @@ function renderDeliveryResult(c){
 }
 
 function renderProfit(c){
-  var profitable=c.margin>=0;
   var el=document.getElementById("be-alert");
+  if(isEmptyVal(params.sellingPrice)){
+    el.className="alert";
+    el.style.background="#f1f5f9"; el.style.color="#64748b";
+    el.innerHTML="Введите цену продажи, чтобы увидеть результат.";
+    return;
+  }
+  el.style.background=""; el.style.color="";
+  var profitable=c.margin>=0;
   el.className="alert "+(profitable?"alert-emerald":"alert-rose");
   el.innerHTML=profitable
     ?"Прибыльно: +"+money(c.margin)+" с единицы (ROI "+fmtPct(c.roi)+")."
@@ -562,7 +660,8 @@ function update(){
 
 function initFields(){
   var sp=document.getElementById("f-sellingPrice");
-  sp.value=isNaN(params.sellingPrice)?"":params.sellingPrice;
+  sp.placeholder="0";
+  sp.value=isEmptyVal(params.sellingPrice)?"":params.sellingPrice;
   sp.addEventListener("input",function(e){
     params.sellingPrice=e.target.value===""?NaN:Number(e.target.value);
     update();
@@ -708,6 +807,34 @@ function detectInstallHint(){
     document.getElementById("install-text").innerHTML="<strong>Установите как приложение:</strong> меню браузера (⋮) → «Установить приложение» или «Добавить на главный экран».";
   }
 }
+
+var TAB_TITLES={
+  unit:{title:function(){return currentName||"Новый расчёт"},sub:"Юнит-экономика одежды · сом",list:true},
+  data:{title:function(){return "База данных"},sub:"Раздел в разработке",list:false},
+  profile:{title:function(){return "Профиль"},sub:"Настройки и данные",list:false}
+};
+var currentTab="unit";
+function showTab(name){
+  currentTab=name;
+  document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active",t.id==="tab-"+name)});
+  document.querySelectorAll(".dock-item").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-tab")===name)});
+  var cfg=TAB_TITLES[name];
+  document.getElementById("h-title").textContent=cfg.title();
+  document.getElementById("h-sub").textContent=cfg.sub;
+  document.getElementById("btn-list").style.display=cfg.list?"":"none";
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".dock-item").forEach(function(b){
+  b.addEventListener("click",function(){showTab(b.getAttribute("data-tab"))});
+});
+
+// Имя профиля: хранится на устройстве
+var PROFILE_KEY="clothing-calc-profile";
+var profileInput=document.getElementById("profile-name");
+try{profileInput.value=localStorage.getItem(PROFILE_KEY)||""}catch(e){}
+profileInput.addEventListener("input",function(){
+  try{localStorage.setItem(PROFILE_KEY,profileInput.value)}catch(e){}
+});
 
 document.getElementById("btn-reset").addEventListener("click",reset);
 document.getElementById("btn-save").addEventListener("click",openSave);
