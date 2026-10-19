@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Калькулятор">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Юнит-экономика одежды</title>
+<meta name="description" content="Калькулятор юнит-экономики одежды: маржа, ROI и точка безубыточности">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzBmMTcyYSIvPgogIDxwYXRoIGQ9Ik0yMDggMTEyIFEyNTYgMTY4IDMwNCAxMTIgTDM1MiAxMjggTDQzMiAxODQgTDQwMCAyMzIgTDM2OCAyMTIgVjQwMCBIMTQ0IFYyMTIgTDExMiAyMzIgTDgwIDE4NCBMMTYwIDEyOCBaIiBmaWxsPSIjZjhmYWZjIi8+CiAgPHBhdGggZD0iTTIwOCAxMTIgUTI1NiAxNjggMzA0IDExMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMGYxNzJhIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8Y2lyY2xlIGN4PSIyNTYiIGN5PSIzMDAiIHI9IjQ2IiBmaWxsPSIjMTBiOTgxIi8+CiAgPHBhdGggZD0iTTIzNiAzMTIgTDI1MiAyOTYgTDI2MiAzMDYgTDI3OCAyODgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y4ZmFmYyIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="manifest" href="manifest.json">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8fafc; --card:#fff; --border:#e2e8f0; --text:#0f172a; --muted:#64748b; --soft:#94a3b8;
+  --primary:#0f172a; --primary-hover:#1e293b; --emerald:#10b981; --emerald-bg:#ecfdf5; --emerald-text:#047857;
+  --rose:#ef4444; --rose-bg:#fef2f2; --rose-text:#b91c1c;
+  --sky:#0ea5e9; --sky-bg:#f0f9ff; --sky-text:#0369a1;
+  --amber:#f59e0b; --amber-bg:#fffbeb; --amber-text:#b45309;
+  --indigo:#6366f1;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 1px 3px rgba(0,0,0,.06);
+  --radius:16px; --radius-sm:12px; --radius-xs:8px;
+  --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.5;
+  -webkit-font-smoothing:antialiased; padding-bottom:80px;
+  font-size:15px;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+.app{max-width:480px;margin:0 auto}
+
+/* Header */
+.header{
+  position:sticky; top:0; z-index:20; background:rgba(255,255,255,.92);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:calc(10px + var(--safe-top)) 16px 10px;
+}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.header-title{display:flex;align-items:center;gap:10px;min-width:0}
+.header-logo{
+  width:36px;height:36px;border-radius:12px;background:var(--primary);
+  display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;
+}
+.header-logo svg{width:18px;height:18px}
+.header h1{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header p{font-size:11px;color:var(--muted)}
+.icon-btn{
+  width:36px;height:36px;border-radius:10px;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;color:var(--muted);
+  transition:background .15s;
+}
+.icon-btn:active{background:#f1f5f9}
+.icon-btn svg{width:17px;height:17px}
+
+/* Main */
+.main{padding:16px;display:flex;flex-direction:column;gap:16px}
+
+/* Card */
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px; box-shadow:var(--shadow);
+}
+.card-title{
+  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:6px;
+}
+.card-title svg{width:14px;height:14px;color:var(--text)}
+
+/* Selling price */
+.price-input{position:relative}
+.price-input input{
+  width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);
+  background:#fff;padding:14px 56px 14px 16px;font-size:20px;font-weight:700;
+  font-variant-numeric:tabular-nums;outline:none;color:var(--text);
+  transition:border-color .15s,box-shadow .15s;
+}
+.price-input input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(15,23,42,.08)}
+.price-suffix{
+  position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  font-size:14px;font-weight:600;color:var(--soft);
+}
+
+/* Stats grid */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{
+  position:relative;overflow:hidden;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);
+}
+.stat-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--soft)}
+.stat-value{margin-top:4px;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-sub{margin-top:2px;font-size:10px;color:var(--muted)}
+.stat-icon{
+  position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+}
+.stat-icon svg{width:17px;height:17px}
+.stat-bar{position:absolute;bottom:0;left:0;right:0;height:3px}
+.stat-emerald .stat-icon{background:var(--emerald-bg);color:var(--emerald)}
+.stat-emerald .stat-bar{background:linear-gradient(90deg,var(--emerald),#14b8a6)}
+.stat-rose .stat-icon{background:var(--rose-bg);color:var(--rose)}
+.stat-rose .stat-bar{background:linear-gradient(90deg,var(--rose),#dc2626)}
+.stat-sky .stat-icon{background:var(--sky-bg);color:var(--sky)}
+.stat-sky .stat-bar{background:linear-gradient(90deg,var(--sky),var(--indigo))}
+.stat-amber .stat-icon{background:var(--amber-bg);color:var(--amber)}
+.stat-amber .stat-bar{background:linear-gradient(90deg,var(--amber),#f97316)}
+
+/* Fields */
+.field{display:block;margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.field-icon{
+  width:30px;height:30px;border-radius:8px;background:#f1f5f9;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s;
+}
+.field:focus-within .field-icon{background:var(--primary);color:#fff}
+.field-icon svg{width:15px;height:15px}
+.field-label{font-size:13px;font-weight:500;color:#334155}
+.field-input{position:relative}
+.field-input input{
+  width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);
+  background:#fff;padding:12px 50px 12px 14px;font-size:16px;font-weight:600;
+  font-variant-numeric:tabular-nums;outline:none;color:var(--text);
+  transition:border-color .15s,box-shadow .15s;
+}
+.field-input input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(15,23,42,.08)}
+.field-suffix{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  font-size:13px;font-weight:500;color:var(--soft);
+}
+.field-hint{margin-top:4px;font-size:11px;color:var(--soft)}
+
+/* Fabric result */
+.fabric-result{
+  margin-top:12px;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,#f0f9ff,#eef2ff);border:1px solid #dbeafe;
+  padding:12px 14px;
+}
+.fabric-result-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sky-text)}
+.fabric-result-value{margin-top:4px;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;color:#0c4a6e}
+.fabric-result-formula{margin-top:2px;font-size:11px;color:rgba(3,105,161,.8)}
+
+/* Alert */
+.alert{
+  margin-top:12px;border-radius:var(--radius-xs);padding:8px 12px;
+  font-size:12px;font-weight:500;
+}
+.alert-rose{background:var(--rose-bg);color:var(--rose-text)}
+.alert-emerald{background:var(--emerald-bg);color:var(--emerald-text)}
+.alert-amber{background:var(--amber-bg);color:var(--amber-text)}
+
+/* Breakdown */
+.breakdown{display:flex;flex-direction:column;gap:8px}
+.break-row{display:flex;align-items:center;gap:8px;font-size:12px}
+.break-label{width:74px;flex-shrink:0;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.break-bar{flex:1;height:18px;border-radius:6px;background:#f1f5f9;overflow:hidden}
+.break-fill{height:100%;border-radius:6px;transition:width .4s ease}
+.break-amt{width:64px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums;font-weight:500;color:#334155}
+
+/* Break-even grid */
+.be-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.be-card{border-radius:var(--radius-sm);padding:12px;border:1px solid}
+.be-amber{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#fde68a}
+.be-sky{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border-color:#bae6fd}
+.be-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.be-amber .be-label{color:var(--amber-text)}
+.be-sky .be-label{color:var(--sky-text)}
+.be-value{margin-top:4px;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.be-sub{margin-top:2px;font-size:10px;opacity:.8}
+.be-sky .be-sub{color:var(--sky-text)}
+.be-amber .be-value{color:#92400e}
+.be-sky .be-value{color:#0c4a6e}
+
+/* Action bar */
+.actionbar{
+  position:fixed;bottom:0;left:0;right:0;z-index:20;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);
+  padding:12px 16px calc(12px + var(--safe-bottom));
+}
+.actionbar-inner{max-width:480px;margin:0 auto;display:flex;gap:8px}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  border-radius:var(--radius-sm);font-size:14px;font-weight:600;transition:all .12s;
+}
+.btn svg{width:16px;height:16px}
+.btn-ghost{
+  border:1px solid var(--border);color:var(--muted);padding:12px 16px;
+}
+.btn-ghost:active{background:#f1f5f9}
+.btn-primary{
+  flex:1;background:var(--primary);color:#fff;padding:12px;
+}
+.btn-primary:active{background:var(--primary-hover);transform:scale(.99)}
+
+/* Modal */
+.overlay{
+  position:fixed;inset:0;z-index:30;background:rgba(15,23,42,.4);
+  display:flex;align-items:flex-end;justify-content:center;padding:16px;
+  animation:fade .2s;
+}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes slide{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal{
+  width:100%;max-width:380px;background:#fff;border-radius:var(--radius);
+  padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slide .25s;
+}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-head h3{font-size:16px;font-weight:700}
+.modal-close{color:var(--soft);padding:4px}
+.modal-close svg{width:20px;height:20px}
+.modal input{
+  width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:12px 14px;font-size:16px;outline:none;margin-bottom:16px;color:var(--text);
+}
+.modal input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(15,23,42,.08)}
+.modal .btn-primary{width:100%}
+
+/* Drawer */
+.drawer-overlay{
+  position:fixed;inset:0;z-index:30;background:rgba(15,23,42,.4);
+  display:flex;justify-content:flex-end;animation:fade .2s;
+}
+.drawer{
+  width:100%;max-width:380px;background:#fff;height:100%;overflow-y:auto;
+  box-shadow:0 0 40px rgba(0,0,0,.15);animation:slideRight .25s;
+}
+@keyframes slideRight{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.drawer-head{
+  position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);
+  padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+}
+.drawer-head h3{font-size:16px;font-weight:700}
+.drawer-body{padding:12px}
+.new-btn{
+  width:100%;display:flex;align-items:center;gap:12px;border:1px dashed var(--border);
+  border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;
+  font-size:14px;font-weight:500;color:var(--muted);transition:background .15s;
+}
+.new-btn:active{background:#f8fafc}
+.new-btn svg{width:18px;height:18px}
+.saved-item{
+  display:flex;align-items:center;gap:8px;border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;transition:background .15s;
+}
+.saved-item.active{border-color:var(--primary);background:#f8fafc}
+.saved-item:active{background:#f8fafc}
+.saved-info{flex:1;min-width:0}
+.saved-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.saved-meta{font-size:11px;color:var(--soft)}
+.saved-open{flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;min-width:0}
+.saved-open svg{width:16px;height:16px;color:#cbd5e1;flex-shrink:0}
+.saved-del{
+  width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  color:#cbd5e1;transition:all .15s;flex-shrink:0;
+}
+.saved-del:active{background:var(--rose-bg);color:var(--rose)}
+.saved-del svg{width:15px;height:15px}
+.empty{text-align:center;font-size:14px;color:var(--soft);padding:40px 0}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:88px;left:50%;transform:translateX(-50%);z-index:40;
+  background:var(--primary);color:#fff;padding:8px 16px;border-radius:999px;
+  font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,.2);
+  animation:toastIn .25s;
+}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+
+/* Spinner */
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Install hint */
+.install-hint{
+  margin:0 16px 16px;background:linear-gradient(135deg,#f0f9ff,#eef2ff);
+  border:1px solid #dbeafe;border-radius:var(--radius);padding:12px 14px;
+  font-size:12px;color:var(--sky-text);display:flex;align-items:flex-start;gap:8px;
+}
+.install-hint svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
+.install-hint strong{font-weight:700}
+</style>
+</head>
+<body>
+<noscript>
+  <div style="padding:30px 20px;text-align:center;font-family:-apple-system,sans-serif;color:#0f172a;font-size:15px">
+    <h2 style="margin-bottom:12px">JavaScript отключён</h2>
+    <p style="color:#64748b">Этот калькулятор требует JavaScript. Откройте файл в Safari (не в приложении «Файлы»), либо добавьте его на главный экран через «Поделиться → На экран Домой».</p>
+  </div>
+</noscript>
+<div class="app" id="app" style="display:none">
+  <header class="header">
+    <div class="header-row">
+      <div class="header-title">
+        <div class="header-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
+        </div>
+        <div>
+          <h1 id="h-title">Новый расчёт</h1>
+          <p>Юнит-экономика одежды · сом</p>
+        </div>
+      </div>
+      <button class="icon-btn" id="btn-list" aria-label="Сохранённые расчёты">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9z"/><path d="M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Install hint -->
+    <div class="install-hint" id="install-hint" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span id="install-text"></span>
+    </div>
+
+    <!-- Selling price -->
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8"/><path d="M12 6v2"/><path d="M12 16v2"/></svg>
+        Цена продажи
+      </div>
+      <div class="price-input">
+        <input type="number" id="f-sellingPrice" min="0" step="any" inputmode="decimal" placeholder="0">
+        <span class="price-suffix">сом</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats" id="stats"></div>
+
+    <!-- Fabric -->
+    <div class="card">
+      <div class="card-title">Расход ткани</div>
+      <div id="fabric-fields"></div>
+      <div class="fabric-result" id="fabric-result"></div>
+    </div>
+
+    <!-- Direct costs -->
+    <div class="card">
+      <div class="card-title">Прямые затраты</div>
+      <div id="cost-fields"></div>
+    </div>
+
+    <!-- Percent costs -->
+    <div class="card">
+      <div class="card-title">Проценты с продаж</div>
+      <div id="percent-fields"></div>
+      <div id="commission-alert"></div>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="card-title" style="margin:0">Структура затрат</div>
+        <span id="break-total" style="font-size:12px;font-weight:600;color:#334155"></span>
+      </div>
+      <div class="breakdown" id="breakdown"></div>
+    </div>
+
+    <!-- Break-even -->
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Точка безубыточности
+      </div>
+      <div class="be-grid">
+        <div class="be-card be-amber">
+          <div class="be-label">Мин. цена</div>
+          <div class="be-value" id="be-price">—</div>
+        </div>
+        <div class="be-card be-sky">
+          <div class="be-label">Окупаемость рекламы</div>
+          <div class="be-value" id="be-units">—</div>
+          <div class="be-sub" id="be-units-sub"></div>
+        </div>
+      </div>
+      <div id="ad-field" style="margin-top:14px"></div>
+      <div id="be-alert" style="margin-top:12px"></div>
+    </div>
+  </main>
+
+  <div class="actionbar">
+    <div class="actionbar-inner">
+      <button class="btn btn-ghost" id="btn-reset">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        Сброс
+      </button>
+      <button class="btn btn-primary" id="btn-save">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <span id="save-label">Сохранить</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var STORAGE_KEY = "clothing-calc-v2:items";
+var memoryStore = null;
+function storageOK(){try{localStorage.setItem("__t","1");localStorage.removeItem("__t");return true}catch{return false}}
+function storeGet(){if(storageOK()){try{var r=localStorage.getItem(STORAGE_KEY);return r?JSON.parse(r):[]}catch{return memoryStore||[]}}return memoryStore||[]}
+function storeSet(items){if(storageOK()){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(items))}catch{memoryStore=items}}else{memoryStore=items}}
+var DEFAULTS = {
+  fabricPriceUsd: 7.5, exchangeRate: 87.5, lengthPerKg: 2.7, fabricConsumption: 0.65,
+  sewing: 250, furniture: 90, delivery: 120, commission: 17, ads: 150, adBudget: 0, tax: 6, sellingPrice: 1900
+};
+
+var ICONS = {
+  coins:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
+  gem:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>',
+  shirt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>',
+  bag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
+  scissors:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>',
+  truck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>',
+  megaphone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',
+  percent:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>',
+  receipt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/></svg>',
+  trending:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
+  gauge:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>',
+  target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'
+};
+
+var FABRIC_FIELDS = [
+  {key:"fabricPriceUsd",label:"Цена ткани",hint:"Стоимость за 1 кг в $",icon:"coins",suffix:"$"},
+  {key:"exchangeRate",label:"Курс $",hint:"Курс доллара в сомах",icon:"gem",suffix:""},
+  {key:"lengthPerKg",label:"Длина в 1 кг",hint:"Сколько метров в 1 кг ткани",icon:"shirt",suffix:"м"},
+  {key:"fabricConsumption",label:"Расход на изделие",hint:"Вес ткани на одно изделие (кг)",icon:"bag",suffix:"кг"}
+];
+var COST_FIELDS = [
+  {key:"sewing",label:"Пошив",hint:"Работа ателье/фабрики",icon:"scissors",suffix:"сом"},
+  {key:"furniture",label:"Фурнитура",hint:"Нитки, молнии, бирки, упаковка",icon:"gem",suffix:"сом"},
+  {key:"delivery",label:"Доставка",hint:"Логистика до клиента",icon:"truck",suffix:"сом"},
+  {key:"ads",label:"Реклама",hint:"Привлечение на 1 заказ",icon:"megaphone",suffix:"сом"}
+];
+var AD_FIELDS = [
+  {key:"adBudget",label:"Рекламный бюджет",hint:"Общие вложения в рекламу — посчитаем, сколько продаж их окупят",icon:"megaphone",suffix:"сом"}
+];
+var PERCENT_FIELDS = [
+  {key:"commission",label:"Комиссия маркетплейса",hint:"Доля площадки с продажи",icon:"percent",suffix:"%"},
+  {key:"tax",label:"Налог",hint:"С оборота или дохода",icon:"receipt",suffix:"%"}
+];
+var BAR_COLORS = ["#0ea5e9","#6366f1","#8b5cf6","#ec4899","#f59e0b","#10b981","#ef4444","#f97316"];
+
+var params = clone(DEFAULTS);
+var currentId = null, currentName = "";
+
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function num(n){n=Number(n);return isNaN(n)?0:n}
+// Для бесконечных значений показываем прочерк, а не «0»
+function fmt(n){return isFinite(n)?new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(n):"—"}
+function money(n){return isFinite(n)?fmt(n)+" сом":"—"}
+// С точностью до сотых — для кг, курса и цены ткани
+function dec(n){n=isFinite(n)?n:0;return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(n)}
+function fmtPct(n){n=isFinite(n)?n:0;return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:1}).format(n)+"%"}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+
+function loadAll(){
+  var raw=storeGet();
+  if(!Array.isArray(raw))return [];
+  // Старые расчёты без новых полей получают значения по умолчанию
+  return raw.filter(function(c){return c&&typeof c==="object"&&c.params&&typeof c.params==="object"})
+    .map(function(c){var p=clone(DEFAULTS);for(var k in c.params)p[k]=c.params[k];c.params=p;return c});
+}
+function persist(items){storeSet(items)}
+
+function calc(){
+  var priceUsd=num(params.fabricPriceUsd),rate=num(params.exchangeRate),
+      lpk=num(params.lengthPerKg),ckg=num(params.fabricConsumption);
+  var fabricPerKg=priceUsd*rate;
+  var pricePerM=lpk>0?fabricPerKg/lpk:0;
+  var fabric=fabricPerKg*ckg;
+  var sp=num(params.sellingPrice);
+  var comm=num(params.commission)/100, tax=num(params.tax)/100;
+  var fixed=fabric+num(params.sewing)+num(params.furniture)+num(params.delivery)+num(params.ads);
+  var commCost=sp*comm, taxCost=sp*tax;
+  var total=fixed+commCost+taxCost;
+  var margin=sp-total;
+  var marginPct=sp>0?margin/sp*100:0;
+  var roi=total>0?margin/total*100:0;
+  var denom=1-comm-tax;
+  var bePrice=denom>0?fixed/denom:Infinity;
+  // Реклама «на заказ» уже вычтена из маржи. Окупаемость считаем для отдельного общего бюджета.
+  var adBudget=num(params.adBudget);
+  var beUnits=adBudget<=0?0:margin>0?Math.ceil(adBudget/margin):Infinity;
+  return {fabric:fabric,fabricPerKg:fabricPerKg,pricePerM:pricePerM,fixed:fixed,commCost:commCost,taxCost:taxCost,total:total,margin:margin,marginPct:marginPct,roi:roi,bePrice:bePrice,beUnits:beUnits,adBudget:adBudget,sp:sp};
+}
+
+function renderFields(containerId, fields, extraHintFn){
+  var c=document.getElementById(containerId);
+  c.innerHTML="";
+  fields.forEach(function(f){
+    var label=document.createElement("label");
+    label.className="field";
+    var hint=extraHintFn?extraHintFn(f):f.hint;
+    label.innerHTML=
+      '<div class="field-head"><span class="field-icon">'+(ICONS[f.icon]||"")+'</span><span class="field-label">'+f.label+'</span></div>'+
+      '<div class="field-input"><input type="number" min="0" step="any" inputmode="decimal" data-key="'+f.key+'" value="'+(isNaN(params[f.key])?"":params[f.key])+'">'+(f.suffix?'<span class="field-suffix">'+f.suffix+'</span>':"")+'</div>'+
+      '<p class="field-hint">'+hint+'</p>';
+    var inp=label.querySelector("input");
+    inp.addEventListener("input",function(e){
+      params[f.key]=e.target.value===""?NaN:Number(e.target.value);
+      update();
+    });
+    c.appendChild(label);
+  });
+}
+
+function renderStats(c){
+  var profitable=c.margin>=0;
+  var stats=[
+    {label:"Маржа",value:money(c.margin),sub:fmtPct(c.marginPct),icon:ICONS.trending,tone:profitable?"emerald":"rose"},
+    {label:"ROI",value:fmtPct(c.roi),sub:"",icon:ICONS.gauge,tone:c.roi>=0?"sky":"rose"},
+    {label:"Безубыт.",value:money(c.bePrice),sub:"",icon:ICONS.target,tone:"amber"}
+  ];
+  var el=document.getElementById("stats");
+  el.innerHTML=stats.map(function(s){
+    return '<div class="stat stat-'+s.tone+'">'+
+      '<div class="stat-label">'+s.label+'</div>'+
+      '<div class="stat-value">'+s.value+'</div>'+
+      (s.sub?'<div class="stat-sub">'+s.sub+'</div>':"")+
+      '<div class="stat-icon">'+s.icon+'</div>'+
+      '<div class="stat-bar"></div></div>';
+  }).join("");
+}
+
+function renderFabricResult(c){
+  var el=document.getElementById("fabric-result");
+  el.innerHTML=
+    '<div class="fabric-result-label">Расход ткани на изделие</div>'+
+    '<div class="fabric-result-value">'+money(c.fabric)+'</div>'+
+    '<div class="fabric-result-formula">('+dec(num(params.fabricPriceUsd))+' $ × '+dec(num(params.exchangeRate))+' сом) × '+dec(num(params.fabricConsumption))+' кг</div>';
+}
+
+function renderBreakdown(c){
+  var items=[
+    {label:"Ткань",amt:c.fabric},{label:"Пошив",amt:num(params.sewing)},
+    {label:"Фурнитура",amt:num(params.furniture)},{label:"Доставка",amt:num(params.delivery)},
+    {label:"Реклама",amt:num(params.ads)},{label:"Комиссия",amt:c.commCost},{label:"Налог",amt:c.taxCost}
+  ];
+  document.getElementById("break-total").textContent=money(c.total);
+  document.getElementById("breakdown").innerHTML=items.map(function(it,i){
+    var w=c.total>0?Math.max(it.amt/c.total*100,0):0;
+    return '<div class="break-row"><span class="break-label">'+it.label+'</span>'+
+      '<div class="break-bar"><div class="break-fill" style="width:'+w+'%;background:'+BAR_COLORS[i%BAR_COLORS.length]+'"></div></div>'+
+      '<span class="break-amt">'+fmt(it.amt)+'</span></div>';
+  }).join("");
+}
+
+function renderBreakEven(c){
+  document.getElementById("be-price").textContent=money(c.bePrice);
+  document.getElementById("be-units").textContent=(c.beUnits>0&&isFinite(c.beUnits))?c.beUnits+" шт.":"—";
+  document.getElementById("be-units-sub").textContent=
+    c.adBudget<=0?"Укажите бюджет ниже":!isFinite(c.beUnits)?"Маржа ≤ 0 — не окупится":"продаж покроют бюджет";
+  var profitable=c.margin>=0;
+  var el=document.getElementById("be-alert");
+  el.className="alert "+(profitable?"alert-emerald":"alert-rose");
+  el.innerHTML=profitable
+    ?"Прибыльно: +"+money(c.margin)+" с единицы (ROI "+fmtPct(c.roi)+"). Запас цены "+money(c.sp-c.bePrice)+"."
+    :!isFinite(c.bePrice)
+      ?"Убыточно: комиссия и налог забирают всю цену — при таких процентах прибыли не будет."
+      :"Убыточно: не хватает "+money(Math.abs(c.margin))+". Поднимите цену до "+money(c.bePrice)+".";
+}
+
+function renderCommissionAlert(){
+  var el=document.getElementById("commission-alert");
+  if(num(params.commission)+num(params.tax)>=100){
+    el.className="alert alert-rose";
+    el.innerHTML="Комиссия и налог в сумме ≥ 100% — продажа убыточна при любой цене.";
+  }else{el.className="";el.innerHTML="";}
+}
+
+function update(){
+  var c=calc();
+  renderStats(c);
+  renderFabricResult(c);
+  renderBreakdown(c);
+  renderBreakEven(c);
+  renderCommissionAlert();
+  var fc=document.querySelector('[data-key="fabricConsumption"]');
+  if(fc){
+    var p=fc.closest(".field").querySelector(".field-hint");
+    if(p) p.textContent="Итог: "+money(c.fabric)+" за изделие · цена "+money(c.pricePerM)+"/м";
+  }
+}
+
+function initFields(){
+  // Selling price
+  var sp=document.getElementById("f-sellingPrice");
+  sp.value=isNaN(params.sellingPrice)?"":params.sellingPrice;
+  sp.addEventListener("input",function(e){
+    params.sellingPrice=e.target.value===""?NaN:Number(e.target.value);
+    update();
+  });
+
+  renderFields("fabric-fields",FABRIC_FIELDS,function(f){
+    if(f.key==="fabricConsumption"){
+      var c=calc();
+      return "Итог: "+money(c.fabric)+" за изделие · цена "+money(c.pricePerM)+"/м";
+    }
+    return f.hint;
+  });
+  renderFields("cost-fields",COST_FIELDS);
+  renderFields("percent-fields",PERCENT_FIELDS);
+  renderFields("ad-field",AD_FIELDS);
+  update();
+}
+
+function reset(){
+  params=clone(DEFAULTS);
+  currentId=null; currentName="";
+  document.getElementById("h-title").textContent="Новый расчёт";
+  document.getElementById("save-label").textContent="Сохранить";
+  initFields();
+}
+
+var toastTimer;
+function toast(msg){
+  var existing=document.querySelector(".toast");
+  if(existing) existing.remove();
+  var el=document.createElement("div");
+  el.className="toast"; el.textContent=msg;
+  document.body.appendChild(el);
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){el.remove()},2200);
+}
+
+function openSave(){
+  var name=currentName||"Новый расчёт";
+  var ov=document.createElement("div");
+  ov.className="overlay";
+  ov.innerHTML=
+    '<div class="modal">'+
+      '<div class="modal-head"><h3>'+(currentId?"Переименовать":"Сохранить расчёт")+'</h3>'+
+      '<button class="modal-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'+
+      '<input type="text" id="save-name" placeholder="Напр. Футболка оверсайз" value="'+escapeHtml(name)+'">'+
+      '<button class="btn btn-primary" id="save-confirm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Сохранить</button>'+
+    '</div>';
+  document.body.appendChild(ov);
+  var inp=ov.querySelector("#save-name"); inp.focus(); inp.select();
+  function close(){ov.remove()}
+  ov.addEventListener("click",function(e){if(e.target===ov)close()});
+  ov.querySelector(".modal-close").addEventListener("click",close);
+  function doSave(){
+    var n=inp.value.trim()||"Без названия";
+    var items=loadAll();
+    if(currentId){
+      items=items.map(function(it){return it.id===currentId?{id:it.id,name:n,params:clone(params),created_at:it.created_at,updated_at:new Date().toISOString()}:it});
+      persist(items); currentName=n;
+      document.getElementById("h-title").textContent=n;
+      document.getElementById("save-label").textContent="Обновить";
+      toast("Расчёт обновлён");
+    }else{
+      var now=new Date().toISOString();
+      var item={id:uid(),name:n,params:clone(params),created_at:now,updated_at:now};
+      items.unshift(item); persist(items);
+      currentId=item.id; currentName=n;
+      document.getElementById("h-title").textContent=n;
+      document.getElementById("save-label").textContent="Обновить";
+      toast("Расчёт сохранён");
+    }
+    close();
+  }
+  ov.querySelector("#save-confirm").addEventListener("click",doSave);
+  inp.addEventListener("keydown",function(e){if(e.key==="Enter")doSave()});
+}
+
+function openList(){
+  var items=loadAll();
+  var ov=document.createElement("div");
+  ov.className="drawer-overlay";
+  ov.innerHTML='<div class="drawer"></div>';
+  document.body.appendChild(ov);
+  var dr=ov.querySelector(".drawer");
+  function render(){
+    items=loadAll();
+    dr.innerHTML=
+      '<div class="drawer-head"><h3>Мои расчёты</h3>'+
+      '<button class="modal-close" id="drawer-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'+
+      '<div class="drawer-body">'+
+        '<button class="new-btn" id="new-calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Новый расчёт</button>'+
+        (items.length===0?'<p class="empty">Нет сохранённых расчётов</p>':
+          items.map(function(c){
+            var d=new Date(c.updated_at);
+            return '<div class="saved-item'+(c.id===currentId?" active":"")+'">'+
+              '<button class="saved-open" data-id="'+c.id+'">'+
+                '<div class="saved-info"><div class="saved-name">'+escapeHtml(c.name)+'</div>'+
+                '<div class="saved-meta">'+d.toLocaleDateString("ru-RU",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})+' · цена '+fmt(c.params.sellingPrice)+' сом</div></div>'+
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'+
+              '</button>'+
+              '<button class="saved-del" data-del="'+c.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>'+
+            '</div>';
+          }).join("") )+
+      '</div>';
+    dr.querySelector("#drawer-x").addEventListener("click",close);
+    dr.querySelector("#new-calc").addEventListener("click",function(){reset();close()});
+    dr.querySelectorAll(".saved-open").forEach(function(b){
+      b.addEventListener("click",function(){
+        var id=b.getAttribute("data-id");
+        var it=items.find(function(x){return x.id===id});
+        if(it){params=clone(it.params);currentId=it.id;currentName=it.name;
+          document.getElementById("h-title").textContent=it.name;
+          document.getElementById("save-label").textContent="Обновить";
+          initFields();close();}
+      });
+    });
+    dr.querySelectorAll(".saved-del").forEach(function(b){
+      b.addEventListener("click",function(){
+        var id=b.getAttribute("data-del");
+        var all=loadAll().filter(function(x){return x.id!==id});
+        persist(all);
+        if(id===currentId){currentId=null;currentName="";document.getElementById("h-title").textContent="Новый расчёт";document.getElementById("save-label").textContent="Сохранить";}
+        toast("Удалено");render();
+      });
+    });
+  }
+  function close(){ov.remove()}
+  ov.addEventListener("click",function(e){if(e.target===ov)close()});
+  render();
+}
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+
+// Install hint for iOS
+function detectInstallHint(){
+  var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isStandalone=window.navigator.standalone===true||window.matchMedia("(display-mode: standalone)").matches;
+  if(isIOS&&!isStandalone){
+    var el=document.getElementById("install-hint");
+    el.style.display="flex";
+    document.getElementById("install-text").innerHTML="<strong>Добавьте на главный экран:</strong> нажмите «Поделиться» ↓ «На экран Домой», чтобы запускать как приложение без браузера.";
+  }else if(!isStandalone&&window.matchMedia("(display-mode: browser)").matches&&!isIOS){
+    var el2=document.getElementById("install-hint");
+    el2.style.display="flex";
+    document.getElementById("install-text").innerHTML="<strong>Установите как приложение:</strong> меню браузера (⋮) → «Установить приложение» или «Добавить на главный экран».";
+  }
+}
+
+document.getElementById("btn-reset").addEventListener("click",reset);
+document.getElementById("btn-save").addEventListener("click",openSave);
+document.getElementById("btn-list").addEventListener("click",openList);
+
+initFields();
+detectInstallHint();
+document.getElementById("app").style.display="block";
+
+// Офлайн-режим: работает, если рядом лежит sw.js (на GitHub Pages / сервере)
+if("serviceWorker" in navigator && location.protocol!=="file:"){
+  window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){})});
+}
+})();
+</script>
+</body>
+</html>
