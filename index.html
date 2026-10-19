@@ -349,13 +349,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     <div class="card">
       <div class="card-title">Прямые затраты</div>
       <div id="cost-fields"></div>
-    </div>
-
-    <!-- Percent costs -->
-    <div class="card">
-      <div class="card-title">Проценты с продаж</div>
-      <div id="percent-fields"></div>
-      <div id="commission-alert"></div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <div class="card-title" style="margin-bottom:10px">Доставка</div>
+        <div id="delivery-fields"></div>
+        <div class="fabric-result" id="delivery-result"></div>
+      </div>
     </div>
 
     <!-- Breakdown -->
@@ -365,28 +363,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
         <span id="break-total" style="font-size:12px;font-weight:600;color:#334155"></span>
       </div>
       <div class="breakdown" id="breakdown"></div>
-    </div>
-
-    <!-- Break-even -->
-    <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-        Точка безубыточности
-      </div>
-      <div class="be-grid">
-        <div class="be-card be-amber">
-          <div class="be-label">Мин. цена</div>
-          <div class="be-value" id="be-price">—</div>
-        </div>
-        <div class="be-card be-sky">
-          <div class="be-label">Окупаемость рекламы</div>
-          <div class="be-value" id="be-units">—</div>
-          <div class="be-sub" id="be-units-sub"></div>
-        </div>
-      </div>
-      <div id="ad-field" style="margin-top:14px"></div>
       <div id="be-alert" style="margin-top:12px"></div>
     </div>
+
   </main>
 
   <div class="actionbar">
@@ -413,8 +392,8 @@ function storageOK(){try{localStorage.setItem("__t","1");localStorage.removeItem
 function storeGet(){if(storageOK()){try{var r=localStorage.getItem(STORAGE_KEY);return r?JSON.parse(r):[]}catch{return memoryStore||[]}}return memoryStore||[]}
 function storeSet(items){if(storageOK()){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(items))}catch{memoryStore=items}}else{memoryStore=items}}
 var DEFAULTS = {
-  fabricPriceUsd: 7.5, exchangeRate: 87.5, lengthPerKg: 2.7, fabricConsumption: 0.65,
-  sewing: 250, furniture: 90, delivery: 120, commission: 17, ads: 150, adBudget: 0, tax: 6, sellingPrice: 1900
+  fabricPriceUsd: 7.5, exchangeRate: 87.5, lengthPerKg: 2.7, fabricConsumption: 1.7,
+  sewing: 250, furniture: 90, ff: 150, deliveryPerKg: 400, weightKg: 0.3, sellingPrice: 1900
 };
 
 var ICONS = {
@@ -436,20 +415,16 @@ var FABRIC_FIELDS = [
   {key:"fabricPriceUsd",label:"Цена ткани",hint:"Стоимость за 1 кг в $",icon:"coins",suffix:"$"},
   {key:"exchangeRate",label:"Курс $",hint:"Курс доллара в сомах",icon:"gem",suffix:""},
   {key:"lengthPerKg",label:"Длина в 1 кг",hint:"Сколько метров в 1 кг ткани",icon:"shirt",suffix:"м"},
-  {key:"fabricConsumption",label:"Расход на изделие",hint:"Вес ткани на одно изделие (кг)",icon:"bag",suffix:"кг"}
+  {key:"fabricConsumption",label:"Расход по лекалу",hint:"Метров ткани на одно изделие",icon:"bag",suffix:"м"}
 ];
 var COST_FIELDS = [
   {key:"sewing",label:"Пошив",hint:"Работа ателье/фабрики",icon:"scissors",suffix:"сом"},
   {key:"furniture",label:"Фурнитура",hint:"Нитки, молнии, бирки, упаковка",icon:"gem",suffix:"сом"},
-  {key:"delivery",label:"Доставка",hint:"Логистика до клиента",icon:"truck",suffix:"сом"},
-  {key:"ads",label:"Реклама",hint:"Привлечение на 1 заказ",icon:"megaphone",suffix:"сом"}
+  {key:"ff",label:"Услуга ФФ",hint:"Фулфилмент: работа склада на 1 изделие",icon:"truck",suffix:"сом"}
 ];
-var AD_FIELDS = [
-  {key:"adBudget",label:"Рекламный бюджет",hint:"Общие вложения в рекламу — посчитаем, сколько продаж их окупят",icon:"megaphone",suffix:"сом"}
-];
-var PERCENT_FIELDS = [
-  {key:"commission",label:"Комиссия маркетплейса",hint:"Доля площадки с продажи",icon:"percent",suffix:"%"},
-  {key:"tax",label:"Налог",hint:"С оборота или дохода",icon:"receipt",suffix:"%"}
+var DELIVERY_FIELDS = [
+  {key:"deliveryPerKg",label:"Цена доставки за 1 кг",hint:"Тариф перевозки за килограмм",icon:"truck",suffix:"сом"},
+  {key:"weightKg",label:"Вес изделия",hint:"Вес одной единицы товара с упаковкой",icon:"shirt",suffix:"кг"}
 ];
 var BAR_COLORS = ["#0ea5e9","#6366f1","#8b5cf6","#ec4899","#f59e0b","#10b981","#ef4444","#f97316"];
 
@@ -461,7 +436,7 @@ function num(n){n=Number(n);return isNaN(n)?0:n}
 // Для бесконечных значений показываем прочерк, а не «0»
 function fmt(n){return isFinite(n)?new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(n):"—"}
 function money(n){return isFinite(n)?fmt(n)+" сом":"—"}
-// С точностью до сотых — для кг, курса и цены ткани
+// С точностью до сотых — для метров, курса и цены ткани
 function dec(n){n=isFinite(n)?n:0;return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(n)}
 function fmtPct(n){n=isFinite(n)?n:0;return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:1}).format(n)+"%"}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
@@ -469,32 +444,30 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 function loadAll(){
   var raw=storeGet();
   if(!Array.isArray(raw))return [];
-  // Старые расчёты без новых полей получают значения по умолчанию
   return raw.filter(function(c){return c&&typeof c==="object"&&c.params&&typeof c.params==="object"})
-    .map(function(c){var p=clone(DEFAULTS);for(var k in c.params)p[k]=c.params[k];c.params=p;return c});
+    .map(function(c){
+      var p=clone(DEFAULTS);
+      for(var k in c.params)p[k]=c.params[k];
+      // Старое поле «Реклама» переносим в «Услугу ФФ»
+      if(c.params.ads!==undefined&&c.params.ff===undefined)p.ff=c.params.ads;
+      c.params=p;return c;
+    });
 }
 function persist(items){storeSet(items)}
 
 function calc(){
-  var priceUsd=num(params.fabricPriceUsd),rate=num(params.exchangeRate),
-      lpk=num(params.lengthPerKg),ckg=num(params.fabricConsumption);
-  var fabricPerKg=priceUsd*rate;
-  var pricePerM=lpk>0?fabricPerKg/lpk:0;
-  var fabric=fabricPerKg*ckg;
+  var priceUsd=num(params.fabricPriceUsd),rate=num(params.exchangeRate),lpk=num(params.lengthPerKg);
+  // Цена 1 кг в сомах ÷ метров в 1 кг = цена 1 метра; × расход по лекалу (м) = ткань на изделие
+  var pricePerM=lpk>0?(priceUsd*rate)/lpk:0;
+  var fabric=pricePerM*num(params.fabricConsumption);
+  // Доставка за единицу груза: тариф за кг × вес изделия
+  var delivery=num(params.deliveryPerKg)*num(params.weightKg);
   var sp=num(params.sellingPrice);
-  var comm=num(params.commission)/100, tax=num(params.tax)/100;
-  var fixed=fabric+num(params.sewing)+num(params.furniture)+num(params.delivery)+num(params.ads);
-  var commCost=sp*comm, taxCost=sp*tax;
-  var total=fixed+commCost+taxCost;
+  var total=fabric+num(params.sewing)+num(params.furniture)+delivery+num(params.ff);
   var margin=sp-total;
   var marginPct=sp>0?margin/sp*100:0;
   var roi=total>0?margin/total*100:0;
-  var denom=1-comm-tax;
-  var bePrice=denom>0?fixed/denom:Infinity;
-  // Реклама «на заказ» уже вычтена из маржи. Окупаемость считаем для отдельного общего бюджета.
-  var adBudget=num(params.adBudget);
-  var beUnits=adBudget<=0?0:margin>0?Math.ceil(adBudget/margin):Infinity;
-  return {fabric:fabric,fabricPerKg:fabricPerKg,pricePerM:pricePerM,fixed:fixed,commCost:commCost,taxCost:taxCost,total:total,margin:margin,marginPct:marginPct,roi:roi,bePrice:bePrice,beUnits:beUnits,adBudget:adBudget,sp:sp};
+  return {fabric:fabric,pricePerM:pricePerM,delivery:delivery,total:total,margin:margin,marginPct:marginPct,roi:roi,sp:sp};
 }
 
 function renderFields(containerId, fields, extraHintFn){
@@ -522,10 +495,9 @@ function renderStats(c){
   var stats=[
     {label:"Маржа",value:money(c.margin),sub:fmtPct(c.marginPct),icon:ICONS.trending,tone:profitable?"emerald":"rose"},
     {label:"ROI",value:fmtPct(c.roi),sub:"",icon:ICONS.gauge,tone:c.roi>=0?"sky":"rose"},
-    {label:"Безубыт.",value:money(c.bePrice),sub:"",icon:ICONS.target,tone:"amber"}
+    {label:"Себестоим.",value:money(c.total),sub:"на 1 изделие",icon:ICONS.target,tone:"amber"}
   ];
-  var el=document.getElementById("stats");
-  el.innerHTML=stats.map(function(s){
+  document.getElementById("stats").innerHTML=stats.map(function(s){
     return '<div class="stat stat-'+s.tone+'">'+
       '<div class="stat-label">'+s.label+'</div>'+
       '<div class="stat-value">'+s.value+'</div>'+
@@ -540,14 +512,14 @@ function renderFabricResult(c){
   el.innerHTML=
     '<div class="fabric-result-label">Расход ткани на изделие</div>'+
     '<div class="fabric-result-value">'+money(c.fabric)+'</div>'+
-    '<div class="fabric-result-formula">('+dec(num(params.fabricPriceUsd))+' $ × '+dec(num(params.exchangeRate))+' сом) × '+dec(num(params.fabricConsumption))+' кг</div>';
+    '<div class="fabric-result-formula">(('+dec(num(params.fabricPriceUsd))+' $ × '+dec(num(params.exchangeRate))+' сом) ÷ '+dec(num(params.lengthPerKg))+' м) × '+dec(num(params.fabricConsumption))+' м</div>';
 }
 
 function renderBreakdown(c){
   var items=[
     {label:"Ткань",amt:c.fabric},{label:"Пошив",amt:num(params.sewing)},
-    {label:"Фурнитура",amt:num(params.furniture)},{label:"Доставка",amt:num(params.delivery)},
-    {label:"Реклама",amt:num(params.ads)},{label:"Комиссия",amt:c.commCost},{label:"Налог",amt:c.taxCost}
+    {label:"Фурнитура",amt:num(params.furniture)},{label:"Доставка",amt:c.delivery},
+    {label:"Услуга ФФ",amt:num(params.ff)}
   ];
   document.getElementById("break-total").textContent=money(c.total);
   document.getElementById("breakdown").innerHTML=items.map(function(it,i){
@@ -558,36 +530,29 @@ function renderBreakdown(c){
   }).join("");
 }
 
-function renderBreakEven(c){
-  document.getElementById("be-price").textContent=money(c.bePrice);
-  document.getElementById("be-units").textContent=(c.beUnits>0&&isFinite(c.beUnits))?c.beUnits+" шт.":"—";
-  document.getElementById("be-units-sub").textContent=
-    c.adBudget<=0?"Укажите бюджет ниже":!isFinite(c.beUnits)?"Маржа ≤ 0 — не окупится":"продаж покроют бюджет";
+function renderDeliveryResult(c){
+  document.getElementById("delivery-result").innerHTML=
+    '<div class="fabric-result-label">Доставка на изделие</div>'+
+    '<div class="fabric-result-value">'+money(c.delivery)+'</div>'+
+    '<div class="fabric-result-formula">'+dec(num(params.deliveryPerKg))+' сом/кг × '+dec(num(params.weightKg))+' кг</div>';
+}
+
+function renderProfit(c){
   var profitable=c.margin>=0;
   var el=document.getElementById("be-alert");
   el.className="alert "+(profitable?"alert-emerald":"alert-rose");
   el.innerHTML=profitable
-    ?"Прибыльно: +"+money(c.margin)+" с единицы (ROI "+fmtPct(c.roi)+"). Запас цены "+money(c.sp-c.bePrice)+"."
-    :!isFinite(c.bePrice)
-      ?"Убыточно: комиссия и налог забирают всю цену — при таких процентах прибыли не будет."
-      :"Убыточно: не хватает "+money(Math.abs(c.margin))+". Поднимите цену до "+money(c.bePrice)+".";
-}
-
-function renderCommissionAlert(){
-  var el=document.getElementById("commission-alert");
-  if(num(params.commission)+num(params.tax)>=100){
-    el.className="alert alert-rose";
-    el.innerHTML="Комиссия и налог в сумме ≥ 100% — продажа убыточна при любой цене.";
-  }else{el.className="";el.innerHTML="";}
+    ?"Прибыльно: +"+money(c.margin)+" с единицы (ROI "+fmtPct(c.roi)+")."
+    :"Убыточно: не хватает "+money(Math.abs(c.margin))+" до безубытка. Поднимите цену до "+money(c.total)+".";
 }
 
 function update(){
   var c=calc();
   renderStats(c);
   renderFabricResult(c);
+  renderDeliveryResult(c);
   renderBreakdown(c);
-  renderBreakEven(c);
-  renderCommissionAlert();
+  renderProfit(c);
   var fc=document.querySelector('[data-key="fabricConsumption"]');
   if(fc){
     var p=fc.closest(".field").querySelector(".field-hint");
@@ -596,14 +561,12 @@ function update(){
 }
 
 function initFields(){
-  // Selling price
   var sp=document.getElementById("f-sellingPrice");
   sp.value=isNaN(params.sellingPrice)?"":params.sellingPrice;
   sp.addEventListener("input",function(e){
     params.sellingPrice=e.target.value===""?NaN:Number(e.target.value);
     update();
   });
-
   renderFields("fabric-fields",FABRIC_FIELDS,function(f){
     if(f.key==="fabricConsumption"){
       var c=calc();
@@ -612,8 +575,7 @@ function initFields(){
     return f.hint;
   });
   renderFields("cost-fields",COST_FIELDS);
-  renderFields("percent-fields",PERCENT_FIELDS);
-  renderFields("ad-field",AD_FIELDS);
+  renderFields("delivery-fields",DELIVERY_FIELDS);
   update();
 }
 
