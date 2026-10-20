@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#f2f2f2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Калькулятор">
@@ -410,6 +410,69 @@ body{height:100%;overflow:hidden}
 [data-theme="dark"] .saved-item:active{background:#1e293b}
 [data-theme="dark"] .saved-name{color:#f1f5f9}
 [data-theme="dark"] .toast{background:#e2e8f0;color:#0f172a}
+/* ===== Soft monochrome redesign (light) ===== */
+:root:not([data-theme="dark"]){
+  --bg:#f2f2f2; --card:#ebebeb; --border:transparent; --text:#141414; --muted:#6b6b6b; --soft:#9a9a9a;
+  --primary:#141414; --primary-hover:#2a2a2a;
+  --emerald:#141414; --emerald-bg:#dedede; --emerald-text:#141414;
+  --rose:#141414; --rose-bg:#dedede; --rose-text:#141414;
+  --sky:#141414; --sky-bg:#dedede; --sky-text:#3a3a3a;
+  --amber:#141414; --amber-bg:#dedede; --amber-text:#3a3a3a; --indigo:#141414;
+  --shadow:none; --radius:26px; --radius-sm:18px; --radius-xs:14px;
+  --dock-bg:#f7f7f7; --dock-border:rgba(255,255,255,.9); --dock-hl:#fff;
+  --dock-shadow:0 18px 40px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04); --dock-item:#5c5c5c;
+  --dock-active-bg:#e3dfdd; --dock-active-text:#141414; --dock-active-border:transparent;
+}
+:root:not([data-theme="dark"]) body{background:linear-gradient(180deg,#f7f7f7,#ededed);letter-spacing:-.01em}
+:root:not([data-theme="dark"]) .header{background:rgba(247,247,247,.85);border-bottom:none}
+:root:not([data-theme="dark"]) .header-logo{border-radius:14px;background:#141414}
+:root:not([data-theme="dark"]) .icon-btn{border:none;background:#fafafa;border-radius:50%;color:#141414;box-shadow:0 6px 16px rgba(0,0,0,.07)}
+:root:not([data-theme="dark"]) .card,:root:not([data-theme="dark"]) .stat{background:var(--card);border:none;box-shadow:none}
+:root:not([data-theme="dark"]) .card-title{text-transform:none;letter-spacing:-.01em;font-size:17px;font-weight:600;color:#141414}
+:root:not([data-theme="dark"]) .card-title svg{width:20px;height:20px}
+:root:not([data-theme="dark"]) .stat-label{text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:#141414}
+:root:not([data-theme="dark"]) .stat-value{font-size:22px;letter-spacing:-.03em;font-weight:700}
+:root:not([data-theme="dark"]) .stat-sub{font-size:12px;color:#7a7a7a}
+:root:not([data-theme="dark"]) .stat-icon{background:transparent!important;color:#141414!important;width:auto;justify-content:flex-start}
+:root:not([data-theme="dark"]) .stat-icon svg{width:20px;height:20px}
+:root:not([data-theme="dark"]) .stat-bar{background:#141414!important;height:4px;left:14px;right:14px;bottom:10px;border-radius:4px;opacity:.85}
+:root:not([data-theme="dark"]) .field-icon{background:#f6f6f6;color:#141414;border-radius:50%}
+:root:not([data-theme="dark"]) .field:focus-within .field-icon{background:#141414;color:#fff}
+:root:not([data-theme="dark"]) .field-label{color:#141414}
+:root:not([data-theme="dark"]) .field-input input,:root:not([data-theme="dark"]) .price-input input,
+:root:not([data-theme="dark"]) .modal input,:root:not([data-theme="dark"]) .profile-input{background:#f7f7f7;border:1px solid transparent;border-radius:16px;color:#141414}
+:root:not([data-theme="dark"]) .price-input input{font-size:30px;letter-spacing:-.03em;padding:16px 60px 16px 18px}
+:root:not([data-theme="dark"]) input:focus{border-color:#141414!important;box-shadow:0 0 0 4px rgba(20,20,20,.06)!important}
+:root:not([data-theme="dark"]) .delivery-grid .field{background:#f4f4f4;border:none;border-radius:18px}
+:root:not([data-theme="dark"]) .fabric-result,:root:not([data-theme="dark"]) .install-hint{background:#f6f6f6;border:none;color:#3a3a3a}
+:root:not([data-theme="dark"]) .fabric-result-value{color:#141414;font-size:22px;letter-spacing:-.03em}
+:root:not([data-theme="dark"]) .fabric-result-formula,:root:not([data-theme="dark"]) .fabric-result-label{color:#7a7a7a}
+:root:not([data-theme="dark"]) .alert{border-radius:14px;background:#f6f6f6!important;color:#141414!important}
+:root:not([data-theme="dark"]) .break-bar{background:#dcdcdc;border-radius:99px;height:10px}
+:root:not([data-theme="dark"]) .break-fill{border-radius:99px;transition:width .6s cubic-bezier(.22,1,.36,1)}
+:root:not([data-theme="dark"]) .break-amt{color:#141414}
+:root:not([data-theme="dark"]) .be-card{background:#f6f6f6!important;border:none!important;border-radius:18px}
+:root:not([data-theme="dark"]) .be-label,:root:not([data-theme="dark"]) .be-sub{color:#7a7a7a!important;text-transform:none;letter-spacing:0;font-size:12px}
+:root:not([data-theme="dark"]) .be-value{color:#141414!important;font-size:20px;letter-spacing:-.03em}
+:root:not([data-theme="dark"]) .btn{border-radius:999px}
+:root:not([data-theme="dark"]) .btn-ghost{border:none;background:#fafafa;color:#141414;box-shadow:0 6px 16px rgba(0,0,0,.06)}
+:root:not([data-theme="dark"]) .btn-primary{background:#141414;padding:15px;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+:root:not([data-theme="dark"]) .modal,:root:not([data-theme="dark"]) .drawer{background:#f7f7f7}
+:root:not([data-theme="dark"]) .modal{border-radius:30px}
+:root:not([data-theme="dark"]) .drawer-head{background:#f7f7f7;border-bottom:none}
+:root:not([data-theme="dark"]) .overlay,:root:not([data-theme="dark"]) .drawer-overlay{background:rgba(20,20,20,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+:root:not([data-theme="dark"]) .saved-item,:root:not([data-theme="dark"]) .new-btn{background:#ebebeb;border:none;border-radius:20px}
+:root:not([data-theme="dark"]) .saved-item.active{background:#e3dfdd}
+:root:not([data-theme="dark"]) .toast{background:#141414;border-radius:999px}
+:root:not([data-theme="dark"]) .dock-inner{border-radius:40px;padding:6px;backdrop-filter:none;-webkit-backdrop-filter:none}
+:root:not([data-theme="dark"]) .dock-item{border-radius:34px;font-weight:500;font-size:12px}
+.dock-item{transition:background .35s cubic-bezier(.22,1,.36,1),color .25s,transform .2s}
+.card,.stat{animation:softIn .5s cubic-bezier(.22,1,.36,1) both}
+.stat:nth-child(2){animation-delay:.05s}.stat:nth-child(3){animation-delay:.1s}
+@keyframes softIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tab.active{animation:softIn .4s cubic-bezier(.22,1,.36,1)}
+.btn:active,.icon-btn:active,.dock-item:active{transform:scale(.96)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
