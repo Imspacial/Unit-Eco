@@ -453,6 +453,7 @@ body{height:100%;overflow:hidden}
         <input type="number" id="f-sellingPrice" min="0" step="any" inputmode="decimal" placeholder="0">
         <span class="price-suffix">сом</span>
       </div>
+      <div id="wb-fields" style="margin-top:14px"></div>
     </div>
 
     <!-- Stats -->
@@ -563,7 +564,7 @@ function storeSet(items){if(storageOK()){try{localStorage.setItem(STORAGE_KEY,JS
 // Новый расчёт всегда начинается с пустых полей (null = пусто)
 var DEFAULTS = {
   fabricPriceUsd: null, exchangeRate: null, lengthPerKg: null, fabricConsumption: null,
-  sewing: null, furniture: null, ff: null, deliveryPerKg: null, weightKg: null, sellingPrice: null
+  sewing: null, furniture: null, ff: null, deliveryPerKg: null, weightKg: null, sellingPrice: null, wbCommission: null, wbLogistics: null, drr: null
 };
 function isEmptyVal(v){return v===null||v===undefined||(typeof v==="number"&&isNaN(v))}
 
@@ -600,6 +601,15 @@ var COST_FIELDS = [
   {key:"furniture",label:"Фурнитура",hint:"Нитки, молнии, бирки, упаковка",icon:"button",suffix:"сом"},
   {key:"ff",label:"Услуга ФФ",hint:"Фулфилмент: работа склада на 1 изделие",icon:"box",suffix:"сом"}
 ];
+var WB_FIELDS = [
+  {key:"wbCommission",label:"Комиссия WB + эквайринг",hint:"Списывается с цены продажи",icon:"percent",suffix:"%"},
+  {key:"wbLogistics",label:"Логистика WB",hint:"Списывается с цены продажи",icon:"truck",suffix:"%"},
+  {key:"drr",label:"ДРР",hint:"Реклама, списывается с цены продажи",icon:"trending",suffix:"%"}
+];
+// Сумма, которая списывается по каждому % из цены продажи
+function wbAmount(key,c){
+  return key==="wbCommission"?c.wb:key==="wbLogistics"?c.logistics:c.drr;
+}
 var DELIVERY_FIELDS = [
   {key:"deliveryPerKg",label:"Цена за 1 кг",hint:"Тариф доставки",icon:"truck",suffix:"сом"},
   {key:"weightKg",label:"Вес изделия",hint:"С упаковкой",icon:"scales",suffix:"кг"}
@@ -641,11 +651,17 @@ function calc(){
   // Доставка за единицу груза: тариф за кг × вес изделия
   var delivery=num(params.deliveryPerKg)*num(params.weightKg);
   var sp=num(params.sellingPrice);
+  // Себестоимость — только фактические затраты на изделие
   var total=fabric+num(params.sewing)+num(params.furniture)+delivery+num(params.ff);
-  var margin=sp-total;
+  // Комиссия WB в % считается отдельно и списывается с цены продажи
+  var wb=sp*num(params.wbCommission)/100;
+  // Логистика WB и ДРР — тоже % от цены продажи, вне себестоимости
+  var logistics=sp*num(params.wbLogistics)/100;
+  var drr=sp*num(params.drr)/100;
+  var margin=sp-total-wb-logistics-drr;
   var marginPct=sp>0?margin/sp*100:0;
   var roi=total>0?margin/total*100:0;
-  return {fabric:fabric,pricePerM:pricePerM,delivery:delivery,total:total,margin:margin,marginPct:marginPct,roi:roi,sp:sp};
+  return {fabric:fabric,pricePerM:pricePerM,delivery:delivery,wb:wb,logistics:logistics,drr:drr,total:total,margin:margin,marginPct:marginPct,roi:roi,sp:sp};
 }
 
 function renderFields(containerId, fields, extraHintFn){
@@ -736,6 +752,13 @@ function update(){
   renderDeliveryResult(c);
   renderBreakdown(c);
   renderProfit(c);
+  WB_FIELDS.forEach(function(f){
+    var inp=document.querySelector('[data-key="'+f.key+'"]');
+    if(!inp)return;
+    var hint=inp.closest(".field").querySelector(".field-hint");
+    var amt=wbAmount(f.key,c);
+    hint.textContent=(isEmptyVal(params[f.key])||amt===0)?f.hint:"−"+money(amt)+" с каждой продажи";
+  });
   var fc=document.querySelector('[data-key="fabricConsumption"]');
   if(fc){
     var p=fc.closest(".field").querySelector(".field-hint");
@@ -760,6 +783,11 @@ function initFields(){
   });
   renderFields("cost-fields",COST_FIELDS);
   renderFields("delivery-fields",DELIVERY_FIELDS);
+  renderFields("wb-fields",WB_FIELDS,function(f){
+    var c=calc();
+    var amt=wbAmount(f.key,c);
+    return isEmptyVal(params[f.key])||amt===0?f.hint:"−"+money(amt)+" с каждой продажи";
+  });
   update();
 }
 
