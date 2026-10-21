@@ -547,6 +547,11 @@ html[data-theme="dark"]{background-color:var(--t-f7f7f7)!important;background-im
 .nom-modal-body dt{color:var(--muted);font-size:13px}
 .nom-modal-body dd{margin:0;font-weight:600;text-align:right;word-break:break-all}
 .nom-row{cursor:pointer}
+
+/* Шапка (иконка «Калькулятор» и кнопки) стоит прямо над плиткой «Цена продажи» */
+@media (min-height:501px), (orientation:portrait){
+  .header{padding-top:calc(40px + env(safe-area-inset-top,0px));padding-bottom:0}
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
