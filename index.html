@@ -459,7 +459,9 @@ body{overflow:hidden}
 .nom-actions{display:flex;gap:8px;margin-top:14px}
 .nom-actions button{flex:1}
 .nom-error{margin-top:10px;font-size:13px;color:var(--rose-text,#b91c1c)}
-.nom-head,.nom-row{display:grid;grid-template-columns:1.3fr .8fr 1.2fr 1.2fr;gap:8px;padding:10px 4px;font-size:13px;align-items:center}
+.nom-head,.nom-row{display:grid;grid-template-columns:1.1fr .6fr 1.5fr .9fr;gap:8px;padding:10px 4px;font-size:13px;align-items:center}
+.nom-code{display:flex;flex-direction:column;gap:2px;word-break:break-all}
+.nom-sub{font-size:12px;color:var(--muted)}
 .nom-head{font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)}
 .nom-row{border-bottom:1px solid var(--border);word-break:break-all}
 
@@ -524,7 +526,8 @@ html[data-theme="dark"]{background-color:var(--t-f7f7f7)!important;background-im
   border:1.5px solid var(--input-border);background:var(--card);color:var(--text);outline:none}
 .nom-search input:focus{border-color:var(--text)}
 .nom-search button{padding:10px 14px}
-#nom-clear{width:40px;padding:10px 0}
+.nom-clear-btn{flex-shrink:0}
+.nom-clear-btn svg{width:20px;height:20px}
 #nom-count{margin-top:8px}
 .to-top{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);z-index:24;
   width:46px;height:46px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;
@@ -662,8 +665,7 @@ html[data-theme="dark"]{background-color:var(--t-f7f7f7)!important;background-im
         </div>
         <div class="nom-search" id="nom-search" hidden>
           <input type="text" id="nom-q" inputmode="search" autocomplete="off" placeholder="Поиск">
-          <button class="btn-primary" id="nom-find" type="button">Найти</button>
-          <button class="btn-ghost" id="nom-clear" type="button" aria-label="Закрыть поиск">✕</button>
+          <button class="icon-btn nom-clear-btn" id="nom-clear" type="button" aria-label="Закрыть поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         </div>
         <p class="field-hint" id="nom-count"></p>
         <p class="field-hint" id="nom-info">Список пуст. Загрузите файл Excel.</p>
@@ -676,7 +678,7 @@ html[data-theme="dark"]{background-color:var(--t-f7f7f7)!important;background-im
         <p class="nom-error" id="nom-error" hidden></p>
       </div>
       <div class="card" id="nom-card" hidden>
-        <div class="nom-head"><span>Артикул</span><span>Размер</span><span>ШК</span><span>Gtin</span></div>
+        <div class="nom-head"><span>Артикул</span><span>Размер</span><span>ШК / Gtin</span><span>Себестоимость</span></div>
         <div id="nom-rows"></div>
       </div>
       <div class="card empty-state" id="nom-empty">
@@ -1159,7 +1161,7 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
 <script>
 (function(){
   var KEY="clothing-calc-nomenclature";
-  var HEAD=["Артикул","Размер","ШК","Gtin"];
+  var HEAD=["Артикул","Размер","ШК","Gtin","Себестоимость"];
   var MODES={articul:{label:"Артикул",key:"articul"},sk:{label:"ШК",key:"sk"},gtin:{label:"Gtin",key:"gtin"}};
   var $=function(id){return document.getElementById(id)};
   var mode="articul", query="", allItems=[], visible=[];
@@ -1212,7 +1214,7 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
   function openProduct(it){
     var body=$("nom-modal-body");
     body.textContent="";
-    [["Артикул",it.articul],["Размер",it.size],["ШК",it.sk],["Gtin",it.gtin]].forEach(function(p){
+    [["Артикул",it.articul],["Размер",it.size],["ШК",it.sk],["Gtin",it.gtin],["Себестоимость",it.cost]].forEach(function(p){
       var wrap=document.createElement("div");
       var dt=document.createElement("dt");dt.textContent=p[0];
       var dd=document.createElement("dd");dd.textContent=p[1]||"—";
@@ -1245,9 +1247,15 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
     }
     visible.forEach(function(it){
       var row=document.createElement("div");row.className="nom-row";
-      [it.articul,it.size,it.sk,it.gtin].forEach(function(v){
-        var sp=document.createElement("span");sp.textContent=v;row.appendChild(sp);
-      });
+      var a=document.createElement("span");a.textContent=it.articul;
+      var z=document.createElement("span");z.textContent=it.size;
+      var code=document.createElement("span");
+      code.className="nom-code";
+      var sk=document.createElement("span");sk.textContent="ШК: "+it.sk;
+      var gt=document.createElement("span");gt.className="nom-sub";gt.textContent="Gtin: "+it.gtin;
+      code.appendChild(sk);code.appendChild(gt);
+      var c=document.createElement("span");c.textContent=it.cost||"—";
+      row.appendChild(a);row.appendChild(z);row.appendChild(code);row.appendChild(c);
       row.addEventListener("click",function(){openProduct(it)});
       box.appendChild(row);
     });
@@ -1267,7 +1275,7 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
         var rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:"",raw:false,blankrows:false});
         if(!rows.length){showError("Файл пустой.");return}
         var h=rows[0];
-        var idx={art:findCol(h,["артикул"]),size:findCol(h,["размер"]),sk:findCol(h,["шк","sk"]),gtin:findCol(h,["gtin"])};
+        var idx={art:findCol(h,["артикул"]),size:findCol(h,["размер"]),sk:findCol(h,["шк","sk"]),gtin:findCol(h,["gtin"]),cost:findCol(h,["себестоимость"])};
         if(idx.art<0){showError("В файле нет столбца «Артикул». Используйте шаблон.");return}
         var items=[];
         rows.slice(1).forEach(function(r){
@@ -1275,7 +1283,8 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
             articul:clean(r[idx.art]),
             size:idx.size>=0?clean(r[idx.size]):"",
             sk:idx.sk>=0?clean(r[idx.sk]):"",
-            gtin:idx.gtin>=0?clean(r[idx.gtin]):""
+            gtin:idx.gtin>=0?clean(r[idx.gtin]):"",
+            cost:idx.cost>=0?clean(r[idx.cost]):""
           };
           if(it.articul||it.size||it.sk||it.gtin)items.push(it);
         });
@@ -1293,16 +1302,16 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
   function exportList(){
     var d=load();
     if(!d||!d.items||!d.items.length)return;
-    var aoa=[HEAD].concat(d.items.map(function(it){return [it.articul,it.size,it.sk,it.gtin]}));
+    var aoa=[HEAD].concat(d.items.map(function(it){return [it.articul,it.size,it.sk,it.gtin,it.cost||""]}));
     var ws=XLSX.utils.aoa_to_sheet(aoa);
-    ws["!cols"]=[{wch:18},{wch:12},{wch:20},{wch:20}];
+    ws["!cols"]=[{wch:18},{wch:12},{wch:20},{wch:20},{wch:16}];
     var wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,"Номенклатура");
     XLSX.writeFile(wb,"nomenclature_"+new Date().toISOString().slice(0,10)+".xlsx");
   }
   function downloadTemplate(){
     var ws=XLSX.utils.aoa_to_sheet([HEAD]);
-    ws["!cols"]=[{wch:18},{wch:12},{wch:20},{wch:20}];
+    ws["!cols"]=[{wch:18},{wch:12},{wch:20},{wch:20},{wch:16}];
     var wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,"Номенклатура");
     XLSX.writeFile(wb,"nomenclature_template.xlsx");
@@ -1332,7 +1341,6 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
   });
   $("nom-q").addEventListener("input",function(){query=$("nom-q").value;render()});
   $("nom-q").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();runSearch()}});
-  $("nom-find").addEventListener("click",runSearch);
   $("nom-clear").addEventListener("click",closeSearch);
   document.addEventListener("click",function(e){
     if(!$("nom-menu").hidden&&!e.target.closest("#nom-menu")&&!e.target.closest("#nom-search-btn"))openMenu(false);
