@@ -444,7 +444,7 @@ html[data-theme="dark"]{background:#0b1120}
 /* ===== Раскладка: приложение на весь экран, без границ ===== */
 [hidden]{display:none!important}
 html,body{margin:0;padding:0;height:100%}
-html,body{background:linear-gradient(180deg,var(--t-f7f7f7),var(--t-ededed))}
+html,body{background:var(--t-f7f7f7)}
 body{overflow:hidden}
 .app{position:fixed;top:0;right:0;bottom:0;left:0;max-width:480px;margin:0 auto;height:auto;display:flex;flex-direction:column;overflow:hidden}
 .header{position:absolute;top:0;left:0;right:0;z-index:20;border-bottom:0;
@@ -462,6 +462,17 @@ body{overflow:hidden}
 .nom-head,.nom-row{display:grid;grid-template-columns:1.3fr .8fr 1.2fr 1.2fr;gap:8px;padding:10px 4px;font-size:13px;align-items:center}
 .nom-head{font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)}
 .nom-row{border-bottom:1px solid var(--border);word-break:break-all}
+
+/* ===== Без границ: фон страницы сплошной, шапка без фона, только кнопки ===== */
+html,body{margin:0;padding:0;background:var(--t-f7f7f7)}
+html{background:var(--t-f7f7f7)}
+.header{background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;
+  padding:calc(12px + env(safe-area-inset-top,0px)) 16px 8px}
+.header-actions .icon-btn{border-radius:50%}
+:root .header{background:var(--t-f7f7f7)!important;border-bottom:0!important;box-shadow:none!important}
+html[data-theme="dark"]{background:var(--t-f7f7f7)}
+.screens{padding-top:calc(74px + env(safe-area-inset-top,0px))}
+.dock{padding:0 16px calc(env(safe-area-inset-bottom,0px) + 2px)}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -480,8 +491,8 @@ body{overflow:hidden}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
         </div>
         <div>
-          <h1 id="h-title">Новый расчёт</h1>
-          <p id="h-sub">Юнит-экономика одежды · сом</p>
+          <h1 id="h-title">Калькулятор</h1>
+          <p id="h-sub" hidden></p>
         </div>
       </div>
       <div class="header-actions" id="header-actions">
@@ -990,9 +1001,9 @@ function detectInstallHint(){
 }
 
 var TAB_TITLES={
-  unit:{title:function(){return currentName||"Новый расчёт"},sub:"Юнит-экономика одежды · сом",list:true},
-  data:{title:function(){return "Data Base"},sub:"Номенклатура",list:false},
-  orders:{title:function(){return "Заказы"},sub:"Раздел в работе",list:false}
+  unit:{title:function(){return "Калькулятор"},sub:"",list:true},
+  data:{title:function(){return "Калькулятор"},sub:"",list:false},
+  orders:{title:function(){return "Калькулятор"},sub:"",list:false}
 };
 var currentTab="unit";
 function showTab(name){
