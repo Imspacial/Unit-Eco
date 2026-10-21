@@ -507,6 +507,43 @@ html[data-theme="dark"]{background-color:var(--t-f7f7f7)!important;background-im
 [data-theme="dark"] body{background-color:var(--t-f7f7f7)!important;background-image:none!important}
 [data-theme="dark"] .app,[data-theme="dark"] .screens,[data-theme="dark"] .header,[data-theme="dark"] .header:root{background-color:transparent!important}
 [data-theme="dark"] .header{background-color:var(--t-f7f7f7)!important}
+
+/* ===== Прозрачные окна в стиле дока ===== */
+.glass{
+  background:var(--dock-bg);
+  backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);
+  border:1px solid var(--dock-border);border-radius:22px;
+  box-shadow:inset 0 1px 0 var(--dock-hl),var(--dock-shadow);
+}
+.nom-menu{position:absolute;top:52px;right:16px;z-index:40;display:flex;flex-direction:column;gap:4px;padding:6px;min-width:150px}
+.nom-menu button{background:transparent;border:0;border-radius:16px;padding:11px 14px;text-align:left;
+  font-size:15px;font-weight:600;color:var(--text);cursor:pointer}
+.nom-menu button:active{background:var(--dock-active-bg)}
+.nom-search{display:flex;gap:8px;margin-top:12px;align-items:center}
+.nom-search input{flex:1;min-width:0;padding:10px 12px;font-size:16px;border-radius:14px;
+  border:1.5px solid var(--input-border);background:var(--card);color:var(--text);outline:none}
+.nom-search input:focus{border-color:var(--text)}
+.nom-search button{padding:10px 14px}
+#nom-clear{width:40px;padding:10px 0}
+#nom-count{margin-top:8px}
+.to-top{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);z-index:24;
+  width:46px;height:46px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;
+  color:var(--dock-active-text);cursor:pointer;
+  opacity:0;transform:translate(-50%,14px);pointer-events:none;
+  transition:opacity .35s ease,transform .35s ease}
+.to-top svg{width:22px;height:22px}
+.to-top.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.nom-modal{position:fixed;top:0;right:0;bottom:0;left:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:20px}
+.nom-modal[hidden]{display:none}
+.nom-modal-backdrop{position:absolute;top:0;right:0;bottom:0;left:0;background:var(--t-overlay)}
+.nom-modal-panel{position:relative;width:min(360px,100%);padding:18px 20px}
+.nom-modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:700;font-size:16px}
+.nom-modal-body{margin:0}
+.nom-modal-body div{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--border)}
+.nom-modal-body div:last-child{border-bottom:0}
+.nom-modal-body dt{color:var(--muted);font-size:13px}
+.nom-modal-body dd{margin:0;font-weight:600;text-align:right;word-break:break-all}
+.nom-row{cursor:pointer}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -611,8 +648,24 @@ html[data-theme="dark"]{background-color:var(--t-f7f7f7)!important;background-im
   <!-- Section: Data Base (empty) -->
   <div class="tab" id="tab-data">
     <main class="main">
-      <div class="card">
-        <div class="card-title">Номенклатура</div>
+      <div class="card" style="position:relative">
+        <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+          <span>Номенклатура</span>
+          <button class="icon-btn" id="nom-search-btn" type="button" aria-label="Поиск" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+        <div class="glass nom-menu" id="nom-menu" hidden>
+          <button type="button" data-mode="articul">Артикул</button>
+          <button type="button" data-mode="sk">ШК</button>
+          <button type="button" data-mode="gtin">Gtin</button>
+        </div>
+        <div class="nom-search" id="nom-search" hidden>
+          <input type="text" id="nom-q" inputmode="search" autocomplete="off" placeholder="Поиск">
+          <button class="btn-primary" id="nom-find" type="button">Найти</button>
+          <button class="btn-ghost" id="nom-clear" type="button" aria-label="Закрыть поиск">✕</button>
+        </div>
+        <p class="field-hint" id="nom-count"></p>
         <p class="field-hint" id="nom-info">Список пуст. Загрузите файл Excel.</p>
         <div class="nom-actions">
           <button class="btn-primary" id="btn-import" type="button">Импорт</button>
@@ -1086,11 +1139,30 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
 }
 })();
 </script>
+<!-- Кнопка «наверх» над доком -->
+<button class="glass to-top" id="to-top" type="button" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
+
+<!-- Карточка товара -->
+<div class="nom-modal" id="nom-modal" hidden>
+  <div class="nom-modal-backdrop" id="nom-modal-bg"></div>
+  <div class="glass nom-modal-panel" role="dialog" aria-label="Товар">
+    <div class="nom-modal-head">
+      <span>Товар</span>
+      <button class="icon-btn" id="nom-modal-close" type="button" aria-label="Закрыть">✕</button>
+    </div>
+    <dl class="nom-modal-body" id="nom-modal-body"></dl>
+  </div>
+</div>
+
 <script>
 (function(){
   var KEY="clothing-calc-nomenclature";
-  var $=function(id){return document.getElementById(id)};
   var HEAD=["Артикул","Размер","ШК","Gtin"];
+  var MODES={articul:{label:"Артикул",key:"articul"},sk:{label:"ШК",key:"sk"},gtin:{label:"Gtin",key:"gtin"}};
+  var $=function(id){return document.getElementById(id)};
+  var mode="articul", query="", allItems=[], visible=[];
 
   function load(){try{var r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch(e){return null}}
   function save(d){try{localStorage.setItem(KEY,JSON.stringify(d));return true}catch(e){return false}}
@@ -1106,25 +1178,84 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
     catch(e){return ""}
   }
 
+  // ----- поиск -----
+  function applyFilter(){
+    var q=query.trim().toLowerCase();
+    var key=MODES[mode].key;
+    visible=!q?allItems:allItems.filter(function(it){return String(it[key]||"").toLowerCase().indexOf(q)!==-1});
+  }
+  function openMenu(open){$("nom-menu").hidden=!open}
+  function openSearch(m){
+    mode=m;
+    $("nom-search").hidden=false;
+    $("nom-q").placeholder="Поиск по «"+MODES[m].label+"»";
+    openMenu(false);
+    $("nom-q").focus();
+    render();
+  }
+  function closeSearch(){
+    query="";
+    $("nom-q").value="";
+    $("nom-search").hidden=true;
+    openMenu(false);
+    render();
+  }
+  function runSearch(){
+    query=$("nom-q").value;
+    applyFilter();
+    render();
+    // точное совпадение одного товара — открываем карточку сразу
+    if(query.trim()&&visible.length===1)openProduct(visible[0]);
+  }
+
+  // ----- карточка товара -----
+  function openProduct(it){
+    var body=$("nom-modal-body");
+    body.textContent="";
+    [["Артикул",it.articul],["Размер",it.size],["ШК",it.sk],["Gtin",it.gtin]].forEach(function(p){
+      var wrap=document.createElement("div");
+      var dt=document.createElement("dt");dt.textContent=p[0];
+      var dd=document.createElement("dd");dd.textContent=p[1]||"—";
+      wrap.appendChild(dt);wrap.appendChild(dd);
+      body.appendChild(wrap);
+    });
+    $("nom-modal").hidden=false;
+  }
+  function closeProduct(){$("nom-modal").hidden=true}
+
+  // ----- список -----
   function render(){
     var d=load();
-    var items=d&&d.items&&d.items.length?d.items:[];
-    $("nom-card").hidden=!items.length;
-    $("nom-empty").hidden=!!items.length;
-    $("btn-export").disabled=!items.length;
-    var box=$("nom-rows"); box.textContent="";
-    if(!items.length){$("nom-info").textContent="Список пуст. Загрузите файл Excel.";return}
-    $("nom-info").textContent=d.fileName+" · позиций: "+items.length+" · загружено "+fmtDate(d.importedAt);
-    items.forEach(function(it){
-      var row=document.createElement("div");
-      row.className="nom-row";
+    allItems=d&&d.items&&d.items.length?d.items:[];
+    $("nom-card").hidden=!allItems.length;
+    $("nom-empty").hidden=!!allItems.length;
+    $("btn-export").disabled=!allItems.length;
+    $("nom-search-btn").disabled=!allItems.length;
+    var box=$("nom-rows");box.textContent="";
+    if(!allItems.length){
+      $("nom-info").textContent="Список пуст. Загрузите файл Excel.";
+      $("nom-count").textContent="";
+      scheduleTop();return;
+    }
+    $("nom-info").textContent=d.fileName+" · позиций: "+allItems.length+" · загружено "+fmtDate(d.importedAt);
+    applyFilter();
+    if(!visible.length){
+      var none=document.createElement("p");none.className="field-hint";none.style.padding="14px 4px";
+      none.textContent="Ничего не найдено";box.appendChild(none);
+    }
+    visible.forEach(function(it){
+      var row=document.createElement("div");row.className="nom-row";
       [it.articul,it.size,it.sk,it.gtin].forEach(function(v){
         var sp=document.createElement("span");sp.textContent=v;row.appendChild(sp);
       });
+      row.addEventListener("click",function(){openProduct(it)});
       box.appendChild(row);
     });
+    $("nom-count").textContent=query.trim()?"Найдено: "+visible.length+" из "+allItems.length:"";
+    scheduleTop();
   }
 
+  // ----- импорт / экспорт / шаблон -----
   function importFile(file){
     showError("");
     if(typeof XLSX==="undefined"){showError("Не загрузилась библиотека Excel. Проверьте интернет и попробуйте снова.");return}
@@ -1149,18 +1280,16 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
           if(it.articul||it.size||it.sk||it.gtin)items.push(it);
         });
         if(!items.length){showError("В файле нет строк с данными.");return}
-        // Новый файл полностью заменяет предыдущий список
         if(!save({fileName:file.name,importedAt:new Date().toISOString(),items:items})){
           showError("Не удалось сохранить список на этом устройстве.");return;
         }
-        render();
+        closeSearch();
       }catch(err){
         showError("Не удалось прочитать файл. Сохраните его как .xlsx и попробуйте снова.");
       }
     };
     reader.readAsArrayBuffer(file);
   }
-
   function exportList(){
     var d=load();
     if(!d||!d.items||!d.items.length)return;
@@ -1171,7 +1300,6 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
     XLSX.utils.book_append_sheet(wb,ws,"Номенклатура");
     XLSX.writeFile(wb,"nomenclature_"+new Date().toISOString().slice(0,10)+".xlsx");
   }
-
   function downloadTemplate(){
     var ws=XLSX.utils.aoa_to_sheet([HEAD]);
     ws["!cols"]=[{wch:18},{wch:12},{wch:20},{wch:20}];
@@ -1180,6 +1308,7 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
     XLSX.writeFile(wb,"nomenclature_template.xlsx");
   }
 
+  // ----- события -----
   $("btn-import").addEventListener("click",function(){$("nom-file").click()});
   $("nom-file").addEventListener("change",function(e){
     var f=e.target.files&&e.target.files[0];
@@ -1194,12 +1323,46 @@ if("serviceWorker" in navigator && location.protocol!=="file:"){
     if(typeof XLSX==="undefined"){showError("Не загрузилась библиотека Excel. Проверьте интернет.");return}
     downloadTemplate();
   });
-  render();
+  $("nom-search-btn").addEventListener("click",function(e){
+    e.stopPropagation();
+    openMenu($("nom-menu").hidden);
+  });
+  document.querySelectorAll("#nom-menu [data-mode]").forEach(function(btn){
+    btn.addEventListener("click",function(){openSearch(btn.getAttribute("data-mode"))});
+  });
+  $("nom-q").addEventListener("input",function(){query=$("nom-q").value;render()});
+  $("nom-q").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();runSearch()}});
+  $("nom-find").addEventListener("click",runSearch);
+  $("nom-clear").addEventListener("click",closeSearch);
+  document.addEventListener("click",function(e){
+    if(!$("nom-menu").hidden&&!e.target.closest("#nom-menu")&&!e.target.closest("#nom-search-btn"))openMenu(false);
+  });
+  $("nom-modal-bg").addEventListener("click",closeProduct);
+  $("nom-modal-close").addEventListener("click",closeProduct);
 
-  // Страница не должна уезжать: iOS иногда сдвигает её после клавиатуры, и док остаётся выше края
+  // ----- кнопка «наверх»: появляется после 30% списка -----
+  var screens=$("screens"), toTop=$("to-top");
+  function progress(){
+    var max=screens.scrollHeight-screens.clientHeight;
+    return max>0?screens.scrollTop/max:0;
+  }
+  function updateTop(){
+    var tab=document.querySelector(".tab.active");
+    var onData=!!tab&&tab.id==="tab-data";
+    toTop.classList.toggle("show",onData&&progress()>=0.3);
+  }
+  function scheduleTop(){requestAnimationFrame(updateTop)}
+  screens.addEventListener("scroll",updateTop,{passive:true});
+  window.addEventListener("resize",scheduleTop);
+  document.querySelectorAll(".dock-item").forEach(function(b){b.addEventListener("click",function(){setTimeout(updateTop,0)})});
+  toTop.addEventListener("click",function(){screens.scrollTo({top:0,behavior:"smooth"})});
+
+  // Страница не должна уезжать: iOS иногда сдвигает её после клавиатуры
   function pin(){if(window.scrollX||window.scrollY)window.scrollTo(0,0)}
   window.addEventListener("scroll",pin,{passive:true});
   document.addEventListener("focusout",function(){setTimeout(pin,300)});
+
+  render();
 })();
 </script>
 </body>
