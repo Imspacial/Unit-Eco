@@ -440,7 +440,30 @@ html[data-theme="dark"]{background:#0b1120}
   border-color:var(--text);
 }
 :root .delivery-grid .field{border:1.5px solid var(--input-border)}
+
+/* ===== Раскладка: приложение на весь экран, без границ ===== */
+[hidden]{display:none!important}
+html,body{margin:0;padding:0;height:100%}
+html,body{background:linear-gradient(180deg,var(--t-f7f7f7),var(--t-ededed))}
+body{overflow:hidden}
+.app{position:fixed;top:0;right:0;bottom:0;left:0;max-width:480px;margin:0 auto;height:auto;display:flex;flex-direction:column;overflow:hidden}
+.header{position:absolute;top:0;left:0;right:0;z-index:20;border-bottom:0;
+  background:linear-gradient(180deg,var(--t-header) 72%,rgba(0,0,0,0));
+  padding:calc(10px + env(safe-area-inset-top,0px)) 16px 14px}
+.screens{position:absolute;top:0;right:0;bottom:0;left:0;
+  padding-top:calc(84px + env(safe-area-inset-top,0px));
+  padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.dock{bottom:0;padding:0 16px calc(env(safe-area-inset-bottom,0px) + 4px)}
+
+/* ===== Номенклатура (Data Base) ===== */
+.nom-actions{display:flex;gap:8px;margin-top:14px}
+.nom-actions button{flex:1}
+.nom-error{margin-top:10px;font-size:13px;color:var(--rose-text,#b91c1c)}
+.nom-head,.nom-row{display:grid;grid-template-columns:1.3fr .8fr 1.2fr 1.2fr;gap:8px;padding:10px 4px;font-size:13px;align-items:center}
+.nom-head{font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)}
+.nom-row{border-bottom:1px solid var(--border);word-break:break-all}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 <noscript>
@@ -543,10 +566,25 @@ html[data-theme="dark"]{background:#0b1120}
   <!-- Section: Data Base (empty) -->
   <div class="tab" id="tab-data">
     <main class="main">
-      <div class="card empty-state">
+      <div class="card">
+        <div class="card-title">Номенклатура</div>
+        <p class="field-hint" id="nom-info">Список пуст. Загрузите файл Excel.</p>
+        <div class="nom-actions">
+          <button class="btn-primary" id="btn-import" type="button">Импорт</button>
+          <button class="btn-ghost" id="btn-export" type="button" disabled>Экспорт</button>
+        </div>
+        <button class="btn-ghost" id="btn-template" type="button" style="width:100%;margin-top:8px">Скачать шаблон таблицы</button>
+        <input type="file" id="nom-file" accept=".xlsx,.xls,.csv" hidden>
+        <p class="nom-error" id="nom-error" hidden></p>
+      </div>
+      <div class="card" id="nom-card" hidden>
+        <div class="nom-head"><span>Артикул</span><span>Размер</span><span>ШК</span><span>Gtin</span></div>
+        <div id="nom-rows"></div>
+      </div>
+      <div class="card empty-state" id="nom-empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
-        <p style="font-weight:600;color:#334155;margin-bottom:4px">База данных пуста</p>
-        <p>Раздел в разработке</p>
+        <p style="font-weight:600;margin-bottom:4px">Номенклатура не загружена</p>
+        <p>Импортируйте файл Excel по шаблону</p>
       </div>
     </main>
   </div>
@@ -953,7 +991,7 @@ function detectInstallHint(){
 
 var TAB_TITLES={
   unit:{title:function(){return currentName||"Новый расчёт"},sub:"Юнит-экономика одежды · сом",list:true},
-  data:{title:function(){return "База данных"},sub:"Раздел в разработке",list:false},
+  data:{title:function(){return "Data Base"},sub:"Номенклатура",list:false},
   orders:{title:function(){return "Заказы"},sub:"Раздел в работе",list:false}
 };
 var currentTab="unit";
@@ -1001,6 +1039,122 @@ document.getElementById("app").style.display="flex";
 if("serviceWorker" in navigator && location.protocol!=="file:"){
   window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){})});
 }
+})();
+</script>
+<script>
+(function(){
+  var KEY="clothing-calc-nomenclature";
+  var $=function(id){return document.getElementById(id)};
+  var HEAD=["Артикул","Размер","ШК","Gtin"];
+
+  function load(){try{var r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch(e){return null}}
+  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d));return true}catch(e){return false}}
+  function clean(v){return v===null||v===undefined?"":String(v).trim()}
+  function norm(v){return clean(v).toLowerCase().replace(/\s+/g,"")}
+  function findCol(headers,names){
+    for(var i=0;i<headers.length;i++){if(names.indexOf(norm(headers[i]))!==-1)return i}
+    return -1;
+  }
+  function showError(msg){var el=$("nom-error");el.textContent=msg||"";el.hidden=!msg}
+  function fmtDate(iso){
+    try{return new Date(iso).toLocaleString("ru-RU",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"})}
+    catch(e){return ""}
+  }
+
+  function render(){
+    var d=load();
+    var items=d&&d.items&&d.items.length?d.items:[];
+    $("nom-card").hidden=!items.length;
+    $("nom-empty").hidden=!!items.length;
+    $("btn-export").disabled=!items.length;
+    var box=$("nom-rows"); box.textContent="";
+    if(!items.length){$("nom-info").textContent="Список пуст. Загрузите файл Excel.";return}
+    $("nom-info").textContent=d.fileName+" · позиций: "+items.length+" · загружено "+fmtDate(d.importedAt);
+    items.forEach(function(it){
+      var row=document.createElement("div");
+      row.className="nom-row";
+      [it.articul,it.size,it.sk,it.gtin].forEach(function(v){
+        var sp=document.createElement("span");sp.textContent=v;row.appendChild(sp);
+      });
+      box.appendChild(row);
+    });
+  }
+
+  function importFile(file){
+    showError("");
+    if(typeof XLSX==="undefined"){showError("Не загрузилась библиотека Excel. Проверьте интернет и попробуйте снова.");return}
+    var reader=new FileReader();
+    reader.onload=function(e){
+      try{
+        var wb=XLSX.read(new Uint8Array(e.target.result),{type:"array"});
+        var sheet=wb.Sheets[wb.SheetNames[0]];
+        var rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:"",raw:false,blankrows:false});
+        if(!rows.length){showError("Файл пустой.");return}
+        var h=rows[0];
+        var idx={art:findCol(h,["артикул"]),size:findCol(h,["размер"]),sk:findCol(h,["шк","sk"]),gtin:findCol(h,["gtin"])};
+        if(idx.art<0){showError("В файле нет столбца «Артикул». Используйте шаблон.");return}
+        var items=[];
+        rows.slice(1).forEach(function(r){
+          var it={
+            articul:clean(r[idx.art]),
+            size:idx.size>=0?clean(r[idx.size]):"",
+            sk:idx.sk>=0?clean(r[idx.sk]):"",
+            gtin:idx.gtin>=0?clean(r[idx.gtin]):""
+          };
+          if(it.articul||it.size||it.sk||it.gtin)items.push(it);
+        });
+        if(!items.length){showError("В файле нет строк с данными.");return}
+        // Новый файл полностью заменяет предыдущий список
+        if(!save({fileName:file.name,importedAt:new Date().toISOString(),items:items})){
+          showError("Не удалось сохранить список на этом устройстве.");return;
+        }
+        render();
+      }catch(err){
+        showError("Не удалось прочитать файл. Сохраните его как .xlsx и попробуйте снова.");
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function exportList(){
+    var d=load();
+    if(!d||!d.items||!d.items.length)return;
+    var aoa=[HEAD].concat(d.items.map(function(it){return [it.articul,it.size,it.sk,it.gtin]}));
+    var ws=XLSX.utils.aoa_to_sheet(aoa);
+    ws["!cols"]=[{wch:18},{wch:12},{wch:20},{wch:20}];
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,"Номенклатура");
+    XLSX.writeFile(wb,"nomenclature_"+new Date().toISOString().slice(0,10)+".xlsx");
+  }
+
+  function downloadTemplate(){
+    var ws=XLSX.utils.aoa_to_sheet([HEAD]);
+    ws["!cols"]=[{wch:18},{wch:12},{wch:20},{wch:20}];
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,"Номенклатура");
+    XLSX.writeFile(wb,"nomenclature_template.xlsx");
+  }
+
+  $("btn-import").addEventListener("click",function(){$("nom-file").click()});
+  $("nom-file").addEventListener("change",function(e){
+    var f=e.target.files&&e.target.files[0];
+    if(f)importFile(f);
+    e.target.value="";
+  });
+  $("btn-export").addEventListener("click",function(){
+    if(typeof XLSX==="undefined"){showError("Не загрузилась библиотека Excel. Проверьте интернет.");return}
+    exportList();
+  });
+  $("btn-template").addEventListener("click",function(){
+    if(typeof XLSX==="undefined"){showError("Не загрузилась библиотека Excel. Проверьте интернет.");return}
+    downloadTemplate();
+  });
+  render();
+
+  // Страница не должна уезжать: iOS иногда сдвигает её после клавиатуры, и док остаётся выше края
+  function pin(){if(window.scrollX||window.scrollY)window.scrollTo(0,0)}
+  window.addEventListener("scroll",pin,{passive:true});
+  document.addEventListener("focusout",function(){setTimeout(pin,300)});
 })();
 </script>
 </body>
