@@ -473,6 +473,40 @@ html{background:var(--t-f7f7f7)}
 html[data-theme="dark"]{background:var(--t-f7f7f7)}
 .screens{padding-top:calc(74px + env(safe-area-inset-top,0px))}
 .dock{padding:0 16px calc(env(safe-area-inset-bottom,0px) + 2px)}
+
+/* ===== Адаптивная раскладка: телефоны, планшеты, компьютер; без границ ===== */
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--t-f7f7f7)}
+html[data-theme="dark"]{background:var(--t-f7f7f7)}
+.app,.screens,.header,.main,.tab{border:0!important;outline:none}
+.app{left:0;right:0;width:100%;max-width:520px;margin:0 auto;background:transparent}
+.screens{left:0;right:0;width:100%}
+.header{left:0;right:0}
+.dock{left:0;right:0}
+.dock-inner{width:min(360px,calc(100% - 0px))}
+/* компьютер и планшет: колонка по центру, без растягивания */
+@media (min-width:600px){
+  .app{max-width:560px}
+  .dock-inner{max-width:400px}
+  .header{padding-left:24px;padding-right:24px}
+  .main{padding-left:20px;padding-right:20px}
+}
+@media (min-width:1024px){
+  .app{max-width:600px}
+  .dock-inner{max-width:420px}
+}
+/* маленькие экраны и горизонтальная ориентация */
+@media (max-height:500px) and (orientation:landscape){
+  .header{padding-top:calc(6px + env(safe-area-inset-top,0px));padding-bottom:4px}
+  .screens{padding-top:calc(56px + env(safe-area-inset-top,0px))}
+}
+
+/* ===== Фон: светлая тема однотонная Egret 11-0103 TCX; тёмная тема как раньше (с переходом) ===== */
+:root{--page-bg:#F2F0EB}
+html,body,.app,.header,.screens,:root .header{background-color:var(--page-bg)!important;background-image:none!important}
+html[data-theme="dark"]{background-color:var(--t-f7f7f7)!important;background-image:none!important}
+[data-theme="dark"] body{background-color:var(--t-f7f7f7)!important;background-image:none!important}
+[data-theme="dark"] .app,[data-theme="dark"] .screens,[data-theme="dark"] .header,[data-theme="dark"] .header:root{background-color:transparent!important}
+[data-theme="dark"] .header{background-color:var(--t-f7f7f7)!important}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -1002,7 +1036,7 @@ function detectInstallHint(){
 
 var TAB_TITLES={
   unit:{title:function(){return "Калькулятор"},sub:"",list:true},
-  data:{title:function(){return "Калькулятор"},sub:"",list:false},
+  data:{title:function(){return "Номенклатура"},sub:"",list:false},
   orders:{title:function(){return "Калькулятор"},sub:"",list:false}
 };
 var currentTab="unit";
